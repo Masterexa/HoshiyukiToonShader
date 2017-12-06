@@ -1,3 +1,3 @@
 ## Overview
-Hoshiyuki Toon ShaderはUnityのグローバルイルミネーションと、HDRレンダリングに自然な形で対応したトゥーンシェーダです。
+Hoshiyuki Toon ShaderはUnityのグローバルイルミネーションと、HDRレンダリングに自然な形で対応したトゥーンシェーダです。<br />
 現在開発途中で、仕様が大きく変更される可能性があります。
