@@ -25,7 +25,7 @@ Shader "HoshiyukiToon/Lit" {
 		CGPROGRAM
 			#pragma multi_compile _ NWH_TOON_CUTOUT
 			#pragma multi_compile _ NWH_TOON_STANDARDGI
-			#pragma surface surf ToonRamp fullforwardshadows
+			#pragma surface surf ToonRamp fullforwardshadows addshadow
 			#pragma lighting ToonRamp exclude_path:prepass
 			#pragma target 3.0
 			#include "HoshiyukiToonLighting.cginc"
@@ -35,7 +35,7 @@ Shader "HoshiyukiToon/Lit" {
 			fixed4		_Color;
 
 			struct Input {
-				float2 uv_MainTex;
+				float2	uv_MainTex;
 			};
 
 			/** サーフェイスシェーダー.
@@ -48,6 +48,37 @@ Shader "HoshiyukiToon/Lit" {
 				CLIP_PROCESS(o)
 			}
 		ENDCG
+
+
+		Pass 
+        {
+			Name "SHADOWCASTER"
+            Tags {"LightMode"="ShadowCaster"}
+            Cull Off
+ 
+            CGPROGRAM
+            #pragma vertex vert
+            #pragma fragment frag
+            #pragma multi_compile_shadowcaster
+            #include "UnityCG.cginc"
+ 
+            struct v2f {
+                V2F_SHADOW_CASTER;
+            };
+ 
+            v2f vert(appdata_base v)
+            {
+                v2f o;
+                TRANSFER_SHADOW_CASTER_NORMALOFFSET(o)
+                return o;
+            }
+ 
+            float4 frag(v2f i) : SV_Target
+            {
+                SHADOW_CASTER_FRAGMENT(i)
+            }
+            ENDCG
+        }
 	}
 	FallBack "Diffuse"
 	CustomEditor "NowhereUnityEditor.Rendering.HoshiyukiToonEditor"
