@@ -26,6 +26,7 @@ Shader "HoshiyukiToon/LitOutline"
 	{
 		Tags{"RenderType" = "Opaque"}
 		UsePass "HoshiyukiToon/Lit/FORWARD"
+		UsePass "HoshiyukiToon/Lit/SHADOWCASTER"
 		UsePass "HoshiyukiToon/Outline/OUTLINE"
 	}
 	Fallback "Diffuse"

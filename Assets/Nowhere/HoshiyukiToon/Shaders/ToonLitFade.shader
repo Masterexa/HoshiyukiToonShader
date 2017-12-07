@@ -45,6 +45,8 @@ Shader "HoshiyukiToon/LitFade" {
 				CLIP_PROCESS(o)
 			}
 		ENDCG
+
+		UsePass "HoshiyukiToon/Lit/SHADOWCASTER"
 	}
 	FallBack "Diffuse"
 	CustomEditor "NowhereUnityEditor.Rendering.HoshiyukiToonEditor"
