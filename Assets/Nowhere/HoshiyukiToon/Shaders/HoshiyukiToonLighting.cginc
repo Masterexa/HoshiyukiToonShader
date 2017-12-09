@@ -10,6 +10,7 @@
  分岐用キーワード
   - NWH_TOON_CUTOUT		- 定義時clip関数の使用、SurfaceOutput.Alphaに対して実行される
   - NWH_TOON_STANDARDGI - 定義時、通常のGIを使用する
+  - CLIP_PROCESS(o)		- NWH_TOON_CUTOUTの実装部、o.Alphaに対してclip()を実行する
 */
 
 /* --- Keyworlds --- */
@@ -54,9 +55,8 @@
 			LightingStandardSpecular_GI( s, data, gi );
 		#else
 			
-			gi.light.color					*= data.atten;
 			Unity_GlossyEnvironmentData g	= UnityGlossyEnvironmentSetup( s.Smoothness, data.worldViewDir, s.Normal, s.Specular);
-			gi.indirect.diffuse				= ShadeToonSHPerPixel( s.Normal, half3(0,0,0), data.worldPos );
+			gi								= ToonGI_Base( data, s.Occlusion, s.Normal );
 			gi.indirect.specular			= UnityGI_IndirectSpecular( data, s.Occlusion, g );
 		#endif
 	}
