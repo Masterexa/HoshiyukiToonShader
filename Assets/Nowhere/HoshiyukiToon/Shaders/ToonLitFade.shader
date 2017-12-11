@@ -7,8 +7,14 @@ Shader "HoshiyukiToon/LitFade" {
 		// Lit
 		_Color		("Color", Color) = (1,1,1,1)
 		_MainTex	("Albedo (RGB)", 2D) = "white" {}
-		_ToonTex	("Ramp Texture", 2D) = "white"{}
-		_ToonFactor	("Ramp Factor", Range( 0,1 ) ) = 1
+		_ToonTex	( "Ramp Texture", 2D ) = "white"{}
+		_ToonFactor	( "Ramp Factor", Range( 0,1 ) ) = 1
+		// Occlusion
+		_OcclusionStrength	( "Occlusion Strength", Range( 0,1 ) )=0
+		_OcclusionMap		( "Occlusion Map", 2D )="white"{}
+		// Emission
+		_EmissionColor	( "Color", Color ) = (0,0,0)
+		_EmissionMap	( "Emission", 2D ) = "white"{}
 		
 		// Lit Options
 		[ToggleOff]								_UseStandardGI("Use Standard GI", Float) = 0
@@ -29,6 +35,8 @@ Shader "HoshiyukiToon/LitFade" {
 
 			sampler2D	_MainTex;
 			fixed4		_Color;
+			fixed		_OcclusionStrength;
+			sampler2D	_OcclusionMap;
 
 			struct Input {
 				float2 uv_MainTex;
@@ -39,8 +47,10 @@ Shader "HoshiyukiToon/LitFade" {
 			 *
 			 */
 			void surf( Input IN, inout SurfaceOutputStandardSpecular o ) {
-				fixed4 c		= tex2D( _MainTex, IN.uv_MainTex ) * _Color;
+				fixed4	c		= tex2D( _MainTex, IN.uv_MainTex ) * _Color;
+				half	oc		= lerp( 1, tex2D( _OcclusionMap, IN.uv_MainTex ).r, _OcclusionStrength );
 				o.Albedo		= c.rgb;
+				o.Occlusion		= oc;
 				o.Alpha			= c.a;
 				CLIP_PROCESS(o)
 			}

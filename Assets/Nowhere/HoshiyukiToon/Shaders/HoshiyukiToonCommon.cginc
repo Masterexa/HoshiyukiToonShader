@@ -213,6 +213,7 @@
 			#endif
 		#endif
 
+		o_gi.indirect.diffuse	*= occlusion;
 		return o_gi;
 	}
 /* end */
