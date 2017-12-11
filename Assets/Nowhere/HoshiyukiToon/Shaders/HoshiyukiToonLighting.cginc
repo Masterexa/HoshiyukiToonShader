@@ -29,19 +29,27 @@
 
 
 /* --- Light functions --- */
+
+	inline half3 GetRamp( half NdL )
+	{
+		NdL = NdL*0.5 + 0.5;
+		return lerp( half3(1,1,1), tex2D(_ToonTex,float2(NdL,NdL)).rgb, _ToonFactor );
+	}
+
+
 	/** ライティング関数.
 	 *
 	 */
 	inline half4 LightingToonRamp(SurfaceOutputStandardSpecular s, half3 lightDir, UnityGI gi)
 	{
 		s.Normal = normalize( s.Normal );
-		half d = dot( s.Normal, gi.light.dir)*0.5 + 0.5;
-		half3 ramp = tex2D( _ToonTex, float2(d, d) ).rgb;
-		ramp = lerp( half3(1, 1, 1), ramp, _ToonFactor );
+		half3	ramp = GetRamp( dot( s.Normal, gi.light.dir ) );
+
 
 		half4 c;
 		c.rgb = s.Albedo * gi.light.color * ramp * NWH_TOON_FWDLIGHT_INTENSITY;
-		c.rgb  += gi.indirect.diffuse * s.Albedo;
+		c.rgb	+= gi.indirect.diffuse*s.Albedo;
+		c.rgb	+= gi.indirect.specular*s.Specular;
 		c.a		= s.Alpha;
 		return c;
 	}
@@ -54,8 +62,42 @@
 		#ifdef NWH_TOON_STANDARDGI
 			LightingStandardSpecular_GI( s, data, gi );
 		#else
-			
 			Unity_GlossyEnvironmentData g	= UnityGlossyEnvironmentSetup( s.Smoothness, data.worldViewDir, s.Normal, s.Specular);
+			gi								= ToonGI_Base( data, s.Occlusion, s.Normal );
+			gi.indirect.specular			= UnityGI_IndirectSpecular( data, s.Occlusion, g );
+		#endif
+	}
+
+
+	/** ライティング関数.
+	 *
+	 */
+	inline half4 LightingToonRampMetallic( SurfaceOutputStandard s, half3 lightDir, UnityGI gi )
+	{
+		s.Normal = normalize( s.Normal );
+		half3	ramp = GetRamp( dot( s.Normal, gi.light.dir ) );
+
+		half4	c;
+		half	oneMinusReflectivity;
+		half3	specColor;
+		s.Albedo = DiffuseAndSpecularFromMetallic( s.Albedo, s.Metallic, specColor, oneMinusReflectivity );
+
+		c.rgb = s.Albedo * gi.light.color * ramp * NWH_TOON_FWDLIGHT_INTENSITY;
+		c.rgb	+= gi.indirect.diffuse*s.Albedo;
+		c.rgb	+= gi.indirect.specular*specColor;
+		c.a		= s.Alpha;
+		return c;
+	}
+
+	/** グローバルイルミネーション関数.
+	*
+	*/
+	inline void LightingToonRampMetallic_GI( inout SurfaceOutputStandard s, UnityGIInput data, inout UnityGI gi )
+	{
+		#ifdef NWH_TOON_STANDARDGI
+			LightingStandard_GI( s, data, gi );
+		#else
+			Unity_GlossyEnvironmentData g	= UnityGlossyEnvironmentSetup( s.Smoothness, data.worldViewDir, s.Normal, lerp( unity_ColorSpaceDielectricSpec.rgb, s.Albedo, s.Metallic ));
 			gi								= ToonGI_Base( data, s.Occlusion, s.Normal );
 			gi.indirect.specular			= UnityGI_IndirectSpecular( data, s.Occlusion, g );
 		#endif
