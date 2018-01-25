@@ -11,7 +11,7 @@ Shader "HoshiyukiToon/Outline"
 	}
 	SubShader
 	{
-		Tags { "RenderType"="Opaque" "LightMode" = "ForwardBase"}
+		Tags { "RenderType"="Transparent" "LightMode" = "ForwardBase"}
 		LOD 100
 
 		Pass
@@ -21,6 +21,7 @@ Shader "HoshiyukiToon/Outline"
 			Cull Front
 			ZWrite On
 			ColorMask RGB
+			Blend SrcAlpha OneMinusSrcAlpha
 
 			CGPROGRAM
 				#pragma vertex vert
