@@ -13,4 +13,4 @@ Hoshiyuki Toon Shader is a toon shader asset for Unity. It is supports global il
 3. 利用したいマテリアルを選び、ShaderをHoshiyukiToonカテゴリの目的に応じたものに変更してください。 
 
 # Instructions
-* [マテリアルリスト](https://github.com/Masterexa/HoshiyukiToonShader/wiki/%E3%83%91%E3%83%A9%E3%83%A1%E3%83%BC%E3%82%BF%E3%83%BC%E3%83%AA%E3%82%B9%E3%83%88)
+* [パラメーターリスト](https://github.com/Masterexa/HoshiyukiToonShader/wiki/%E3%83%91%E3%83%A9%E3%83%A1%E3%83%BC%E3%82%BF%E3%83%BC%E3%83%AA%E3%82%B9%E3%83%88)
