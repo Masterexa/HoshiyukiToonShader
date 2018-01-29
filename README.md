@@ -2,7 +2,7 @@
  Hoshiyuki Toon Shaderは、グローバルイルミネーションやHDRレンダリングに特化したUnity向けのトゥーンシェーダーです。
 (このリポジトリは開発中で、仕様変更によって過去のバージョンとの互換性が失われる場合があります。あらかじめご了承ください)
 
- A toon shader system for Unity.
+Hoshiyuki Toon Shader is a toon shader asset for Unity. It is supports global illumination and HDR lighting naturally.
 
 # Requirement
  Unity 2017.1.0 later
