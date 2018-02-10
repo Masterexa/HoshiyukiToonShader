@@ -22,7 +22,7 @@ Shader "HoshiyukiToon/LitOutline"
 		[ToggleOff]								_UseStandardGI("Use Standard GI", Float) = 0
 		[Enum(UnityEngine.Rendering.CullMode)]	_Cull("Cull Mode", Float ) = 2
 		[HideInInspector]						_Blend( "Mode", Float ) = 0
-
+			
 		// Outline
 		_OutlineColor( "Outline Color", Color ) = (.5,.5,.5,1)
 		_OutlineSize( "Outline Width", Range( .001,.03 ) ) = .002

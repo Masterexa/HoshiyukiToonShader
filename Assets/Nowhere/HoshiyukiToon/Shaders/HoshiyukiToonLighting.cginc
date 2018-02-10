@@ -30,10 +30,22 @@
 
 /* --- Light functions --- */
 
-	inline half3 GetRamp( half NdL )
+	inline half3 getToonRamp( half NdL )
 	{
 		NdL = NdL*0.5 + 0.5;
 		return lerp( half3(1,1,1), tex2D(_ToonTex,float2(NdL,NdL)).rgb, _ToonFactor );
+	}
+
+	inline half4 NWH_HTS_Lighting( half3 diffuse, half3 specular, half oneMinusReflectivity, half smoothness, half3 N, half3 V, UnityLight light, UnityIndirect gi ) {
+
+		half3 ramp = getToonRamp( dot( N, light.dir ) );
+		half4 c;
+
+		c.rgb	= diffuse*ramp*light.color * NWH_TOON_FWDLIGHT_INTENSITY;
+		c.rgb	+= gi.diffuse*diffuse;
+		c.rgb	+= gi.specular*specular;
+		c.a		= 1;
+		return c;
 	}
 
 
@@ -43,7 +55,7 @@
 	inline half4 LightingToonRamp(SurfaceOutputStandardSpecular s, half3 lightDir, UnityGI gi)
 	{
 		s.Normal = normalize( s.Normal );
-		half3	ramp = GetRamp( dot( s.Normal, gi.light.dir ) );
+		half3	ramp = getToonRamp( dot( s.Normal, gi.light.dir ) );
 
 
 		half4 c;
@@ -63,8 +75,7 @@
 			LightingStandardSpecular_GI( s, data, gi );
 		#else
 			Unity_GlossyEnvironmentData g	= UnityGlossyEnvironmentSetup( s.Smoothness, data.worldViewDir, s.Normal, s.Specular);
-			gi								= ToonGI_Base( data, s.Occlusion, s.Normal );
-			gi.indirect.specular			= UnityGI_IndirectSpecular( data, s.Occlusion, g );
+			gi = HoshiyukiToonGI( data, s.Occlusion, s.Normal, g );
 		#endif
 	}
 
@@ -75,7 +86,7 @@
 	inline half4 LightingToonRampMetallic( SurfaceOutputStandard s, half3 lightDir, UnityGI gi )
 	{
 		s.Normal = normalize( s.Normal );
-		half3	ramp = GetRamp( dot( s.Normal, gi.light.dir ) );
+		half3	ramp = getToonRamp( dot( s.Normal, gi.light.dir ) );
 
 		half4	c;
 		half	oneMinusReflectivity;
@@ -98,8 +109,7 @@
 			LightingStandard_GI( s, data, gi );
 		#else
 			Unity_GlossyEnvironmentData g	= UnityGlossyEnvironmentSetup( s.Smoothness, data.worldViewDir, s.Normal, lerp( unity_ColorSpaceDielectricSpec.rgb, s.Albedo, s.Metallic ));
-			gi								= ToonGI_Base( data, s.Occlusion, s.Normal );
-			gi.indirect.specular			= UnityGI_IndirectSpecular( data, s.Occlusion, g );
+			gi = HoshiyukiToonGI( data, s.Occlusion, s.Normal, g );
 		#endif
 	}
 /* end */

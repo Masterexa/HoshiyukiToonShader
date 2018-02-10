@@ -1,0 +1,57 @@
+﻿{
+  "renderingMode": {
+    "m_Text": "レンダリングモード",
+    "m_Image": { "instanceID": 0 },
+    "m_Tooltip": "Opaque : 不透明のポリゴン\nCutoff : 穴あきポリゴン"
+  },
+  "albedoText": {
+    "m_Text": "アルベド",
+    "m_Image": { "instanceID": 0 },
+    "m_Tooltip": "反射率(RGB)と不透明度(アルファ)の設定"
+  },
+  "alphaCutoffText": {
+    "m_Text": "しきい値",
+    "m_Image": { "instanceID": 0 },
+    "m_Tooltip": ""
+  },
+  "rampText": {
+    "m_Text": "ランプ",
+    "m_Image": { "instanceID": 0 },
+    "m_Tooltip": "陰影の設定"
+  },
+  "occlusionText": {
+    "m_Text": "オクルージョン",
+    "m_Image": { "instanceID": 0 },
+    "m_Tooltip": "遮蔽マップの設定"
+  },
+  "emissionText": {
+    "m_Text": "発光",
+    "m_Image": { "instanceID": 0 },
+    "m_Tooltip": ""
+  },
+  "lineSizeText": {
+    "m_Text": "サイズ",
+    "m_Image": { "instanceID": 0 },
+    "m_Tooltip": "アウトラインの太さ(ビューポート空間)"
+  },
+  "lineColorText": {
+    "m_Text": "色",
+    "m_Image": { "instanceID": 0 },
+    "m_Tooltip": "色(RGB)と不透明度(アルファ)の設定"
+  },
+  "standardGIText": {
+    "m_Text": "標準のGIを使う",
+    "m_Image": { "instanceID": 0 },
+    "m_Tooltip": "Unityの一般的な方法でGIを受け取る"
+  },
+  "cullModeText": {
+    "m_Text": "カリングモード",
+    "m_Image": { "instanceID": 0 },
+    "m_Tooltip": "Off:カリングを行わない\nFront:表側をカリングする\nBack:裏面をカリングする"
+  },
+  "tipsText": "キャラクターは、陰影なし・シャドウキャスティングなしがおすすめです。",
+  "primaryMapsText": "Main Maps",
+  "lineSettingsText": "Outline",
+  "advancedOptionsText": "Options"
+
+}

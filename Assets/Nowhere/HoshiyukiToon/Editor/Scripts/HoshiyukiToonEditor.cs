@@ -28,26 +28,30 @@ namespace NowhereUnityEditor.Rendering{
                 ModeEditable = 0x4,
             }
 
-            static class Styles {
-                public static GUIContent renderingMode  = new GUIContent("Rendering Mode", "レンダリングモード");
-                public static GUIContent albedoText     = new GUIContent("Albedo", "反射率");
-                public static GUIContent alphaCutoffText= new GUIContent("Alpha Cutoff", "しきい値");
-                public static GUIContent rampText       = new GUIContent("Ramp", "陰影の設定");
+            [System.Serializable]
+            class Styles {
+                public GUIContent renderingMode  = new GUIContent("Rendering Mode", "Rendering Mode");
+                public GUIContent albedoText     = new GUIContent("Albedo", "Albedo(RGB) and Transparency(Alpha)");
+                public GUIContent alphaCutoffText= new GUIContent("Alpha Cutoff", "");
+                public GUIContent rampText       = new GUIContent("Ramp", "");
 
-                public static GUIContent occlusionText  = new GUIContent("Occlusion", "遮蔽マップの設定");
-                public static GUIContent emissionText   = new GUIContent("Emission", "発光の設定");
+                public GUIContent occlusionText  = new GUIContent("Occlusion", "");
+                public GUIContent emissionText   = new GUIContent("Emission", "");
 
-                public static GUIContent lineSizeText   = new GUIContent("Size", "アウトラインの太さ(スクリーン空間)");
-                public static GUIContent lineColorText  = new GUIContent("Color", "アウトラインの色(GIの影響を受ける)");
+                public GUIContent lineSizeText   = new GUIContent("Size", "Size of Outline(Viewport Space)");
+                public GUIContent lineColorText  = new GUIContent("Color", "Color(RGB) and Transparency(Alpha)");
 
-                public static GUIContent standardGIText                 = new GUIContent("Use Standard GI", "通常の方法でGIを受け取る");
-                public static GUIContent cullModeText                   = new GUIContent("Cull Mode", "カリングモード");
+                public GUIContent standardGIText = new GUIContent("Use Traditional GI", "");
+                public GUIContent cullModeText   = new GUIContent("Cull Mode", "");
 
-                public static string primaryMapsText        = "Main Maps";
-                public static string lineSettingsText       = "Outline";
-                public static string advancedText           = "Advanced Options";
-                public static readonly string[] blendNames  = Enum.GetNames(typeof(BlendMode));
+                public string tipsText                  = "キャラクターは、陰影なし・シャドウキャスティングなしがおすすめです。";
+                public string primaryMapsText           = "Main Maps";
+                public string lineSettingsText          = "Outline";
+                public string advancedOptionsText       = "Advanced Options";
+                public readonly string[] blendNames     = Enum.GetNames(typeof(BlendMode));
             }
+            static Styles   s_styles;
+
         #endregion
 
         #region Instance
@@ -80,6 +84,13 @@ namespace NowhereUnityEditor.Rendering{
 
             #region Events
                 public override void OnGUI(MaterialEditor materialEditor, MaterialProperty[] props) {
+            
+                    if( s_styles==null )
+                    {
+                        s_styles = new Styles();
+                        TryLocalize();
+                    }
+
                     FindProperties(props);
                     m_materialEditor    = materialEditor;
                     var mtl             = materialEditor.target as Material;
@@ -98,14 +109,14 @@ namespace NowhereUnityEditor.Rendering{
                     
                     EditorGUI.BeginChangeCheck();
                     {
-                        EditorGUILayout.HelpBox("キャラクターは、陰影なし・シャドウキャスティングなしがおすすめです。", MessageType.Info);
+                        EditorGUILayout.HelpBox(s_styles.tipsText, MessageType.Info);
                         BlendModeProp();
 
                         // Base Color Area
-                        GUILayout.Label(Styles.primaryMapsText, EditorStyles.boldLabel);
+                        GUILayout.Label(s_styles.primaryMapsText, EditorStyles.boldLabel);
                         DoAlbedoArea(mtl);
-                        m_materialEditor.TexturePropertySingleLine(Styles.rampText, rampMap, (rampMap.textureValue!=null) ? rampFactor : null);
-                        m_materialEditor.TexturePropertySingleLine(Styles.occlusionText, occlusionMap, (occlusionMap.textureValue!=null) ? occlusionFactor : null);
+                        m_materialEditor.TexturePropertySingleLine(s_styles.rampText, rampMap, (rampMap.textureValue!=null) ? rampFactor : null);
+                        m_materialEditor.TexturePropertySingleLine(s_styles.occlusionText, occlusionMap, (occlusionMap.textureValue!=null) ? occlusionFactor : null);
                         DoEmissionArea(mtl);
                         m_materialEditor.TextureScaleOffsetProperty(albedoMap);
 
@@ -114,9 +125,9 @@ namespace NowhereUnityEditor.Rendering{
 
                         // Options Area
                         EditorGUILayout.Space();
-                        GUILayout.Label(Styles.advancedText, EditorStyles.boldLabel);
-                        m_materialEditor.ShaderProperty(cullMode, Styles.cullModeText);
-                        m_materialEditor.ShaderProperty(useStandardGI, Styles.standardGIText);
+                        GUILayout.Label(s_styles.advancedOptionsText, EditorStyles.boldLabel);
+                        m_materialEditor.ShaderProperty(cullMode, s_styles.cullModeText);
+                        m_materialEditor.ShaderProperty(useStandardGI, s_styles.standardGIText);
                     }
                     if( EditorGUI.EndChangeCheck() )
                     {
@@ -138,7 +149,7 @@ namespace NowhereUnityEditor.Rendering{
 
                     EditorGUI.BeginChangeCheck();
                     {
-                        mode = (BlendMode)EditorGUILayout.Popup(Styles.renderingMode.text, (int)mode, Styles.blendNames);
+                        mode = (BlendMode)EditorGUILayout.Popup(s_styles.renderingMode.text, (int)mode, s_styles.blendNames);
                     }
                     if( EditorGUI.EndChangeCheck() )
                     {
@@ -151,10 +162,10 @@ namespace NowhereUnityEditor.Rendering{
 
                 void DoAlbedoArea(Material mtl) {
 
-                    m_materialEditor.TexturePropertySingleLine(Styles.albedoText, albedoMap, albedoColor);
+                    m_materialEditor.TexturePropertySingleLine(s_styles.albedoText, albedoMap, albedoColor);
                     if( ((m_editFlag&EditFlag.ModeEditable)!=0) && (BlendMode)mtl.GetFloat("_Blend")==BlendMode.Cutoff )
                     {
-                        m_materialEditor.ShaderProperty(alphaCutoff, Styles.alphaCutoffText, MaterialEditor.kMiniTextureFieldLabelIndentLevel+1);
+                        m_materialEditor.ShaderProperty(alphaCutoff, s_styles.alphaCutoffText, MaterialEditor.kMiniTextureFieldLabelIndentLevel+1);
                     }
                 }
 
@@ -164,7 +175,7 @@ namespace NowhereUnityEditor.Rendering{
                     bool hadEmissionTex = emissionMap.textureValue != null;
 
                     // Texture and HDR color controls
-                    m_materialEditor.TexturePropertyWithHDRColor(Styles.emissionText, emissionMap, emissionColor, m_hdrPickerConfig, false);
+                    m_materialEditor.TexturePropertyWithHDRColor(s_styles.emissionText, emissionMap, emissionColor, m_hdrPickerConfig, false);
                     
                     float brightness = emissionColor.colorValue.maxColorComponent;
                     if( emissionMap.textureValue!=null && !hadEmissionTex && (brightness<=0) )
@@ -180,10 +191,10 @@ namespace NowhereUnityEditor.Rendering{
                     if( (m_editFlag&EditFlag.Line)!=0 )
                     {
                         EditorGUILayout.Space();
-                        GUILayout.Label(Styles.lineSettingsText, EditorStyles.boldLabel);
+                        GUILayout.Label(s_styles.lineSettingsText, EditorStyles.boldLabel);
 
-                        m_materialEditor.ShaderProperty(lineColor, Styles.lineColorText);
-                        m_materialEditor.ShaderProperty(lineSize, Styles.lineSizeText);    
+                        m_materialEditor.ShaderProperty(lineColor, s_styles.lineColorText);
+                        m_materialEditor.ShaderProperty(lineSize, s_styles.lineSizeText);    
                     }
                 }
 
@@ -261,6 +272,14 @@ namespace NowhereUnityEditor.Rendering{
                             flags |= MaterialGlobalIlluminationFlags.EmissiveIsBlack;
                         }
                         mtl.globalIlluminationFlags = flags;
+                    }
+                }
+
+                static void TryLocalize() {
+                    var obj = (TextAsset)EditorGUIUtility.Load("HoshiyukiToonEditor/Localization/HoshiyukiToonEditor_" + Application.systemLanguage.ToString() + ".json");
+                    if( obj )
+                    {
+                        EditorJsonUtility.FromJsonOverwrite(obj.text, s_styles);
                     }
                 }
 			#endregion
