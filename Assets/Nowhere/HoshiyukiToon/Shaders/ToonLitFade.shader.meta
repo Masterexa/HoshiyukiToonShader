@@ -1,9 +1,13 @@
 fileFormatVersion: 2
 guid: d36a9077bac3da54b80c7553bca47e67
-timeCreated: 1508482324
+timeCreated: 1518245382
 licenseType: Free
 ShaderImporter:
-  defaultTextures: []
+  defaultTextures:
+  - _MainTex: {instanceID: 0}
+  - _ToonTex: {fileID: 2800000, guid: 6ad451bf77b60674f84729a96d3fb7cd, type: 3}
+  - _OcclusionMap: {instanceID: 0}
+  - _EmissionMap: {instanceID: 0}
   userData: 
   assetBundleName: 
   assetBundleVariant: 

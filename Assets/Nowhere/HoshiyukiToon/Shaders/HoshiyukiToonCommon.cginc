@@ -7,6 +7,7 @@
 
 /* includes */
 #include "UnityCG.cginc"
+#include "UnityLightingCommon.cginc"
 #include "UnityPBSLighting.cginc"
 
 /* --- Macros --- */
@@ -67,7 +68,7 @@
 	/** お手軽版、球面調和関数.
 	 *
 	 */
-	inline half3 ShadeSHSimple() {
+	inline half3 ShadeSHSimpleToon() {
 		
 		half3 shl = SHEvalLinearL0L1_Toon();
 
@@ -78,7 +79,7 @@
 	}
 
 	/** 頂点シェーダー版、トゥーンシェーダ向け球面調和取得関数.
-	 * 使われた形跡のない幻の関数.
+	 * 使われた形跡のない幻の関数... だった。
 	 *
 	 * @see UnityStandardUtils.cginc
 	 */
@@ -106,10 +107,9 @@
 	half3 ShadeToonSHPerPixel( half3 normal, half3 ambient, float3 worldPos ) {
 
 		half3 contrib = 0;
-		half4 N = half4(normal, 1);
 
 		#if UNITY_SAMPLE_FULL_SH_PER_PIXEL
-			ambient = max( half3(0,0,0), SHEvalLinearL0L1_Toon());
+			ambient += max( half3(0,0,0), SHEvalLinearL0L1_Toon());
 		#elif (SHADER_TARGET < 30) || UNITY_STANDARD_SIMPLE
 			// nop
 		#else
@@ -125,7 +125,7 @@
 			#else
 				contrib = SHEvalLinearL0L1_Toon();
 			#endif
-			ambient = max( half3(0, 0, 0), ambient + contrib );
+			ambient = max( half3(0,0,0), ambient + contrib );
 
 			#if UNITY_COLORSPACE_GAMMA
 				ambient = LinearToGammaSpace( ambient );
@@ -135,7 +135,6 @@
 		return ambient;
 	}
 
-
 	/** トゥーンシェード版GI関数
 	 *
 	 */
@@ -144,14 +143,14 @@
 		UnityGI	o_gi;
 		ResetUnityGI( o_gi );
 
-		#if !defined(LIGHTMAP_ON)
+		//#if !defined(LIGHTMAP_ON)
 			o_gi.light			= data.light;
 			o_gi.light.color	*= data.atten;
-		#endif
+		//#endif
 
 		/* Realtime GI for dynamic objects */
 		#if UNITY_SHOULD_SAMPLE_SH
-			o_gi.indirect.diffuse	= ShadeToonSHPerPixel( normalWorld, half3(0, 0, 0), data.worldPos );
+			o_gi.indirect.diffuse	= ShadeToonSHPerPixel( normalWorld, half3(0,0,0), data.worldPos );
 		#endif
 
 
@@ -215,6 +214,18 @@
 
 		o_gi.indirect.diffuse	*= occlusion;
 		return o_gi;
+	}
+
+	inline UnityGI HoshiyukiToonGI( UnityGIInput data, half occlusion, half3 normalWorld) {
+
+		return ToonGI_Base( data, occlusion, normalWorld );
+	}
+
+	inline UnityGI HoshiyukiToonGI( UnityGIInput data, half occlusion, half3 normalWorld, Unity_GlossyEnvironmentData glossIn ) {
+
+		UnityGI ret				= ToonGI_Base( data, occlusion, normalWorld );
+		ret.indirect.specular	= UnityGI_IndirectSpecular( data, occlusion, glossIn );
+		return ret;
 	}
 /* end */
 #endif
