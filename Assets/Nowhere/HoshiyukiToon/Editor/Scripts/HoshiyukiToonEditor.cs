@@ -44,7 +44,7 @@ namespace NowhereUnityEditor.Rendering{
                 public GUIContent standardGIText = new GUIContent("Use Traditional GI", "");
                 public GUIContent cullModeText   = new GUIContent("Cull Mode", "");
 
-                public string tipsText                  = "キャラクターは、陰影なし・シャドウキャスティングなしがおすすめです。";
+                public string tipsText                  = "Recommend \"No ramp\" and \"No shadow casting\" for character material.";
                 public string primaryMapsText           = "Main Maps";
                 public string lineSettingsText          = "Outline";
                 public string advancedOptionsText       = "Advanced Options";
