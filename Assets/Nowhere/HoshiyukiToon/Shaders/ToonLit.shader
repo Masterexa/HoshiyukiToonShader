@@ -5,7 +5,7 @@
 Shader "HoshiyukiToon/Lit" {
 	Properties {
 		// Lit
-		_Color				("Color", Color) = (1,1,1,1)
+		_Color				("Color", Color) = (0.65,0.65,0.65,1)
 		_MainTex			("Albedo (RGB)", 2D) = "white" {}
 		_Cutoff				("Clip Threshold", Range(0,1)) = 0.1
 		_ToonTex			("Ramp Texture", 2D) = "white"{}

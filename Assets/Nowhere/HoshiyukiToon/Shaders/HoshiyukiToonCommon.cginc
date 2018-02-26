@@ -14,7 +14,7 @@
 	/** 直接光の強さ.
 	 * 初期値は1/π
 	 */
-#	define NWH_TOON_FWDLIGHT_INTENSITY 0.318309
+#	define NWH_TOON_FWDLIGHT_INTENSITY 1.0//0.318309
 /* end */
 
 
@@ -57,12 +57,41 @@
 	/** トゥーンシェード向け、L0L1球面調和関数.
 	 *
 	 */
-	inline half3 SHEvalLinearL0L1_Toon() {
+	half3 SHEvalLinearL0L1_Toon() {
 		half3 shl;
 		shl.r = dot( unity_SHAr, half4(unity_SHAr.xyz, 1.0) );
 		shl.g = dot( unity_SHAg, half4(unity_SHAg.xyz, 1.0) );
 		shl.b = dot( unity_SHAb, half4(unity_SHAb.xyz, 1.0) );
 		return shl;
+	}
+
+	half3 SHEvalLinearL2_Toon(half4 normal) {
+
+		half3 x1, x2;
+
+		// 4 of the quadratic (L2) polynomials
+		half4 vB = normal.xyzz * normal.yzzx;
+		x1.r = dot( unity_SHBr, vB );
+		x1.g = dot( unity_SHBg, vB );
+		x1.b = dot( unity_SHBb, vB );
+
+		// Final (5th) quadratic (L2) polynomial
+		half vC = normal.x*normal.x - normal.y*normal.y;
+		x2 = unity_SHC.rgb * vC;
+
+		return x1 + x2;
+	}
+
+	half3 ShadeSH9_Toon( half4 normal ) {
+
+		half3 res = SHEvalLinearL0L1_Toon();
+		res += SHEvalLinearL2_Toon( normal );
+
+		#	ifdef UNITY_COLORSPACE_GAMMA
+			res = LinearToGammaSpace (res);
+		#	endif
+
+		return res;
 	}
 
 	/** お手軽版、球面調和関数.
@@ -109,7 +138,7 @@
 		half3 contrib = 0;
 
 		#if UNITY_SAMPLE_FULL_SH_PER_PIXEL
-			ambient += max( half3(0,0,0), SHEvalLinearL0L1_Toon());
+			ambient += max( half3(0,0,0), SHEvalLinearL0L1_Toon() );
 		#elif (SHADER_TARGET < 30) || UNITY_STANDARD_SIMPLE
 			// nop
 		#else
