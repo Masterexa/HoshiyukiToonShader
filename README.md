@@ -1,8 +1,12 @@
 # Hoshiyuki Toon Shader
- Hoshiyuki Toon Shaderは、グローバルイルミネーションやHDRレンダリングに特化したUnity向けのトゥーンシェーダーです。
-(このリポジトリは開発中で、仕様変更によって過去のバージョンとの互換性が失われる場合があります。あらかじめご了承ください)
+## Japanese
+　Hoshiyuki Toon Shaderは、グローバルイルミネーションやHDRレンダリングに特化したUnity向けのトゥーンシェーダーです。このシェーダーはアニメな見た目を維持しつつも、光源や影の明るさ対応したほぼ正確な反射を行うことで、トーンマッピング時のアーティファクトを防ぎます。また、トゥーンシェーディングに特化したグローバルイルミネーションを、スカイボックスやライトマップ、LLPV、ライトマップ(実験的)を通して利用することができます。
+  さらに、サーフェイスシェーダーを通したシェーダーのカスタマイズにも対応し、アセット改変の負担を軽減できます。
+(なお、このリポジトリは開発中で仕様変更によって過去のバージョンとの互換性が失われる場合があります。あらかじめご了承ください)
 
-Hoshiyuki Toon Shader is a toon shader asset for Unity. It is supports global illumination and HDR lighting naturally.
+## English
+Hoshiyuki Toon Shader is a toon shader asset for Unity that provides globall illumination and HDR rendering for specializes to toon shading.
+
 
 # Requirement
  Unity 2017.1.0 Later
@@ -14,7 +18,7 @@ Hoshiyuki Toon Shader is a toon shader asset for Unity. It is supports global il
 
 ## English
 1. Download this repository from "Clone or Download", or download HoshiyukiToonShader.unitypackage.
-2. Import HoshiyukiToonShader.unitypackage to your own project.([How to import package](https://docs.unity3d.com/Manual/AssetPackages.html))
+2. Import HoshiyukiToonShader.unitypackage to your own project.([How to import](https://docs.unity3d.com/Manual/AssetPackages.html))
 
 
 # Instructions
