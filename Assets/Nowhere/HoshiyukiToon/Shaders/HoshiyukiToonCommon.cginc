@@ -121,7 +121,7 @@
 			ambient += SHEvalLinearL0L1_Toon();
 		#else
 			#ifdef UNITY_COLORSPACE_GAMMA
-				ambient = GammaToLinnerSpace( ambient );
+				ambient = GammaToLinearSpace( ambient );
 			#endif
 				ambient += SHEvalLinearL2( half4(normal, 1) );
 		#endif
