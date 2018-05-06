@@ -1,8 +1,8 @@
 # Hoshiyuki Toon Shader 
-## WARNING
-当アセットは開発中のもので、今後の更新によっては互換性が失われる場合があります。あらかじめ留意してください。<br> 
- <br>
- This asset is under development. Depending on future updates, compatibility may be lost.
+
+| 当アセットは開発中のもので、今後の更新によっては互換性が失われる場合があります。あらかじめ留意してください。<br><br>This asset is under development. Depending on future updates, compatibility may be lost.|
+|-----------|
+
 ## Japanese
 　Hoshiyuki Toon Shader(以下、HTS)は、グローバルイルミネーションやHDRレンダリングに特化したUnity向けのトゥーンシェーダーです。<br>
  <br>
