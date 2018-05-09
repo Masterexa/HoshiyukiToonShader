@@ -6,7 +6,7 @@ Shader "HoshiyukiToon/Outline"
 {
 	Properties
 	{
-		_OutlineColor	("Outline Color", Color) = (.5,.5,.5,1)
+		_OutlineColor	("Outline Color", Color) = (.0,.0,.0,1)
 		_OutlineSize	("Outline Width", Range(.001,.03)) = .002
 	}
 	SubShader
@@ -73,11 +73,12 @@ Shader "HoshiyukiToon/Outline"
 						float	fov			= atan( 1 / unity_CameraProjection._m11 ) * 2;
 
 						// Outline translation
-						#ifdef UNITY_Z_0_FAR_FROM_CLIPSPACE
+						//#ifdef UNITY_Z_0_FAR_FROM_CLIPSPACE
 							o.vertex.xy += offset * fov * UNITY_Z_0_FAR_FROM_CLIPSPACE( o.vertex.z ) * edge;
-						#else
-							o.vertex.xy += offset * edge * fov * (o.vertex.z);
-						#endif
+						//#else
+							//o.vertex.xy += offset * edge * fov * (o.vertex.z);
+						//#endif
+
 
 						// GI Calclation
 						o.color		= _OutlineColor;

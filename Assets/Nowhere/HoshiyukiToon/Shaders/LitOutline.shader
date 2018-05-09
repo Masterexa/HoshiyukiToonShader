@@ -7,7 +7,7 @@ Shader "HoshiyukiToon/LitOutline"
 	Properties
 	{
 		// Lit
-		_Color		("Color", Color) = (0.65,0.65,0.65,1)
+		_Color		("Color", Color) = (0.5859,0.5859,0.5859,1)
 		_MainTex	("Albedo (RGB)", 2D) = "white" {}
 		_Cutoff		("Clip Threshold", Range(0,1))=0.1
 		_ToonTex	("Ramp Texture", 2D) = "white"{}
@@ -24,7 +24,7 @@ Shader "HoshiyukiToon/LitOutline"
 		[HideInInspector]						_Blend( "Mode", Float ) = 0
 			
 		// Outline
-		_OutlineColor( "Outline Color", Color ) = (.5,.5,.5,1)
+		_OutlineColor( "Outline Color", Color ) = (.0,.0,.0,0.89)
 		_OutlineSize( "Outline Width", Range( .001,.03 ) ) = .002
 	}
 	SubShader

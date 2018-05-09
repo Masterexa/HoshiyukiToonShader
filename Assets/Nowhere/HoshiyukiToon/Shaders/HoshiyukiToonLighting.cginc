@@ -57,7 +57,6 @@
 		s.Normal = normalize( s.Normal );
 		half3	ramp = getToonRamp( dot( s.Normal, gi.light.dir ) );
 
-
 		half4 c;
 		c.rgb = s.Albedo * gi.light.color * ramp * NWH_TOON_FWDLIGHT_INTENSITY;
 		c.rgb	+= gi.indirect.diffuse*s.Albedo;
