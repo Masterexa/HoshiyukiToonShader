@@ -5,7 +5,7 @@
 Shader "HoshiyukiToon/LitFade" {
 	Properties {
 		// Lit
-		_Color		("Color", Color) = (0.65,0.65,0.65,1)
+		_Color		("Color", Color) = (0.5859,0.5859,0.5859,1)
 		_MainTex	("Albedo (RGB)", 2D) = "white" {}
 		_ToonTex	( "Ramp Texture", 2D ) = "white"{}
 		_ToonFactor	( "Ramp Factor", Range( 0,1 ) ) = 1
@@ -21,7 +21,7 @@ Shader "HoshiyukiToon/LitFade" {
 		[Enum(UnityEngine.Rendering.CullMode)]	_Cull("Cull Mode", Float ) = 2
 	}
 	SubShader{
-		Tags { "RenderType" = "Opaque" }
+		Tags { "RenderType" = "Opaque" "Queue"="Transparent" }
 		Cull [_Cull]
 		LOD 200
 
@@ -52,7 +52,7 @@ Shader "HoshiyukiToon/LitFade" {
 				o.Albedo		= c.rgb;
 				o.Occlusion		= oc;
 				o.Alpha			= c.a;
-				CLIP_PROCESS(o)
+				clip(o.Alpha);
 			}
 		ENDCG
 

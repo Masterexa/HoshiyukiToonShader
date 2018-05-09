@@ -2,7 +2,7 @@ Shader "HoshiyukiToon/Custom/#NAME#" {
 	Properties {
         // Your own variables
 		_MainTex	("Main Texture", 2D) ="white"{}
-		_Color		("Color", Color) = (1,1,1,1)
+		_Color		("Color", Color) = (0.58,0.58,0.58,1)
 
 
 		// REQUIRED : Lit variables
@@ -10,8 +10,8 @@ Shader "HoshiyukiToon/Custom/#NAME#" {
 		_ToonFactor	("Ramp Factor", Range( 0,1 ) ) = 1
 
         // OPTIONAL : Outline Variables
-        _OutlineColor	("Outline Color", Color) = (.5,.5,.5,1)
-		_OutlineSize	("Outline Width", Range(.001,.03)) = .003
+        _OutlineColor	("Outline Color", Color) = (.0,.0,.0,1)
+		_OutlineSize	("Outline Width", Range(.001,.03)) = .002
 	}
 	SubShader {
 		Tags { "RenderType"="Opaque" }
