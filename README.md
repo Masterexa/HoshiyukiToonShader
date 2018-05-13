@@ -23,8 +23,8 @@ Hoshiyuki Toon Shader is a toon shader asset for Unity that provides globall ill
 
 # Installation
 ### Japanese
-1. Clone or DownloadのDownload ZIPからリポジトリをダウンロードするか、HoshiyukiToonShader.unitypackageを直接ダウンロードします。
-2. HoshiyukiToonshader.unitypackageを、利用したいプロジェクト上でインポートします。[アセットパッケージのインポート方法はこちら。](https://docs.unity3d.com/jp/530/Manual/AssetPackages.html)
+1. [アセットパッケージによるインストール](https://github.com/Masterexa/HoshiyukiToonShader/wiki/%E3%82%A4%E3%83%B3%E3%82%B9%E3%83%88%E3%83%BC%E3%83%AB#%E3%82%A2%E3%82%BB%E3%83%83%E3%83%88%E3%83%91%E3%83%83%E3%82%B1%E3%83%BC%E3%82%B8%E3%81%AB%E3%82%88%E3%82%8B%E3%82%A4%E3%83%B3%E3%82%B9%E3%83%88%E3%83%BC%E3%83%AB)
+1. git cloneによるインストール
 
 ### English
 1. Download this repository from "Clone or Download", or download HoshiyukiToonShader.unitypackage.
@@ -32,7 +32,7 @@ Hoshiyuki Toon Shader is a toon shader asset for Unity that provides globall ill
 
 
 # Instructions
-* [パラメーターリスト](https://github.com/Masterexa/HoshiyukiToonShader/wiki/%E3%83%91%E3%83%A9%E3%83%A1%E3%83%BC%E3%82%BF%E3%83%BC%E3%83%AA%E3%82%B9%E3%83%88)
+* [Wiki](https://github.com/Masterexa/HoshiyukiToonShader/wiki)
 
 # Credits
 ### Models
