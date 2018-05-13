@@ -32,7 +32,7 @@ Hoshiyuki Toon Shader is a toon shader asset for Unity that provides globall ill
 
 
 # Instructions
-* [マテリアルプロパティの一覧](https://github.com/Masterexa/HoshiyukiToonShader/wiki/%E3%83%9E%E3%83%86%E3%83%AA%E3%82%A2%E3%83%AB%E3%83%97%E3%83%AD%E3%83%91%E3%83%86%E3%82%A3%E3%81%AE%E4%B8%80%E8%A6%A7)
+* [Wiki](https://github.com/Masterexa/HoshiyukiToonShader/wiki)
 
 # Credits
 ### Models
