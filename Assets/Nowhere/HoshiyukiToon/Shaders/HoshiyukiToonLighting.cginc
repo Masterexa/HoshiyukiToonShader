@@ -24,6 +24,7 @@
 
 /* --- Variables --- */
 	uniform sampler2D	_ToonTex;
+	uniform sampler2D	_ToonPointLightTex;
 	uniform fixed		_ToonFactor;
 /* end */
 
@@ -33,7 +34,14 @@
 	inline half3 getToonRamp( half NdL )
 	{
 		NdL = NdL*0.5 + 0.5;
-		return lerp( half3(1,1,1), tex2D(_ToonTex,float2(NdL,NdL)).rgb, _ToonFactor );
+
+	#if defined(NWH_TOON_POINTLIGHTRAMP) && !defined(USING_DIRECTIONAL_LIGHT)
+		sampler2D toon = _ToonPointLightTex;
+	#else
+		sampler2D toon = _ToonTex;
+	#endif
+
+		return lerp( half3(1,1,1), tex2D(toon,float2(NdL,NdL)).rgb, _ToonFactor );
 	}
 
 	inline half4 NWH_HTS_Lighting( half3 diffuse, half3 specular, half oneMinusReflectivity, half smoothness, half3 N, half3 V, UnityLight light, UnityIndirect gi ) {
