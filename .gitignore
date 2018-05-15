@@ -35,5 +35,8 @@ sysinfo.txt
 *.apk
 *.unitypackage
 
+# UnityHDRI
+Assets/UnityHDRI*
+
 # Exceptions
 !HoshiyukiToonShader_beta.unitypackage
