@@ -54,6 +54,10 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _ToonPointLightTex:
+        m_Texture: {fileID: 2800000, guid: 6ad451bf77b60674f84729a96d3fb7cd, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _ToonTex:
         m_Texture: {fileID: 2800000, guid: 6ad451bf77b60674f84729a96d3fb7cd, type: 3}
         m_Scale: {x: 1, y: 1}
@@ -81,6 +85,6 @@ Material:
     - _UseStandardGI: 0
     - _ZWrite: 1
     m_Colors:
-    - _Color: {r: 0.5882353, g: 0.5882353, b: 0.5882353, a: 1}
+    - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _OutlineColor: {r: 0.30882353, g: 0.30882353, b: 0.30882353, a: 1}

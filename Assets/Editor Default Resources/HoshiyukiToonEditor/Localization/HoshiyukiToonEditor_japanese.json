@@ -19,6 +19,16 @@
     "m_Image": { "instanceID": 0 },
     "m_Tooltip": "陰影の設定"
   },
+  "rampDirectionalText": {
+    "m_Text": "ディレクショナル",
+    "m_Image": { "instanceID": 0 },
+    "m_Tooltip": "ディレクショナルライトのランプの設定"
+  },
+  "rampPointText": {
+    "m_Text": "ポイント",
+    "m_Image": { "instanceID": 0 },
+    "m_Tooltip": "ポイントライトのランプの設定"
+  },
   "occlusionText": {
     "m_Text": "オクルージョン",
     "m_Image": { "instanceID": 0 },
