@@ -34,6 +34,7 @@ Shader "HoshiyukiToon/Lit" {
 			#pragma surface surf ToonRamp fullforwardshadows addshadow
 			#pragma lighting ToonRamp exclude_path:prepass
 			#pragma target 3.0
+			#define NWH_TOON_POINTLIGHTRAMP
 			#include "HoshiyukiToonLighting.cginc"
 
 			fixed		_Cutoff;
