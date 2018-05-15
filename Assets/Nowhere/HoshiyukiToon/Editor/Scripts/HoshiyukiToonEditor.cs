@@ -172,10 +172,11 @@ namespace NowhereUnityEditor.Rendering{
 
                 void DoRampArea(Material mtl) {
 
+                    m_materialEditor.ShaderProperty(rampFactor, s_styles.rampText);
                     EditorGUI.indentLevel++;
                     {
-                        m_materialEditor.ShaderProperty(rampFactor, "Factor");
-                        m_materialEditor.TexturePropertySingleLine(s_styles.rampText, rampMap);
+                        //m_materialEditor.ShaderProperty(rampFactor, "Factor");
+                        m_materialEditor.TexturePropertySingleLine(new GUIContent("Directional Light"), rampMap);
                         m_materialEditor.TexturePropertySingleLine(new GUIContent("Point Light"), rampPointMap);
                     }
                     EditorGUI.indentLevel--;
