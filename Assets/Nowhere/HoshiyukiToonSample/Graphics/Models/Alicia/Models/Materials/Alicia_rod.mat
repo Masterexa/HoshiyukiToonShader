@@ -53,7 +53,7 @@ Material:
     m_Floats:
     - PixelSnap: 0
     - _Blend: 0
-    - _Cull: 2
+    - _Cull: 0
     - _Cutoff: 0.1
     - _Gross: 0.028571427
     - _OcclusionStrength: 0
