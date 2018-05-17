@@ -33,10 +33,7 @@ namespace NowhereUnityEditor.Rendering{
                 public GUIContent renderingMode  = new GUIContent("Rendering Mode", "Rendering Mode");
                 public GUIContent albedoText     = new GUIContent("Albedo", "Albedo(RGB) and Transparency(Alpha)");
                 public GUIContent alphaCutoffText= new GUIContent("Alpha Cutoff", "");
-
-                public GUIContent rampText              = new GUIContent("Ramp", "");
-                public GUIContent rampDirectionalText   = new GUIContent("Directional", "");
-                public GUIContent rampPointText         = new GUIContent("Point", "");
+                public GUIContent rampText       = new GUIContent("Ramp", "");
 
                 public GUIContent occlusionText  = new GUIContent("Occlusion", "");
                 public GUIContent emissionText   = new GUIContent("Emission", "");
@@ -178,8 +175,8 @@ namespace NowhereUnityEditor.Rendering{
                     m_materialEditor.ShaderProperty(rampFactor, s_styles.rampText);
                     EditorGUI.indentLevel++;
                     {
-                        m_materialEditor.TexturePropertySingleLine(s_styles.rampDirectionalText, rampMap);
-                        m_materialEditor.TexturePropertySingleLine(s_styles.rampPointText, rampPointMap);
+                        m_materialEditor.TexturePropertySingleLine(new GUIContent("Directional Light"), rampMap);
+                        m_materialEditor.TexturePropertySingleLine(new GUIContent("Point Light"), rampPointMap);
                     }
                     EditorGUI.indentLevel--;
                 }
