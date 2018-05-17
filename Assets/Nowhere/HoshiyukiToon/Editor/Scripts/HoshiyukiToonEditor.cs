@@ -61,6 +61,7 @@ namespace NowhereUnityEditor.Rendering{
                 MaterialProperty    albedoMap;
                 MaterialProperty    alphaCutoff;
                 MaterialProperty    rampMap;
+                MaterialProperty    rampPointMap;
                 MaterialProperty    rampFactor;
                 MaterialProperty    occlusionFactor;
                 MaterialProperty    occlusionMap;
@@ -115,7 +116,7 @@ namespace NowhereUnityEditor.Rendering{
                         // Base Color Area
                         GUILayout.Label(s_styles.primaryMapsText, EditorStyles.boldLabel);
                         DoAlbedoArea(mtl);
-                        m_materialEditor.TexturePropertySingleLine(s_styles.rampText, rampMap, (rampMap.textureValue!=null) ? rampFactor : null);
+                        DoRampArea(mtl);
                         m_materialEditor.TexturePropertySingleLine(s_styles.occlusionText, occlusionMap, (occlusionMap.textureValue!=null) ? occlusionFactor : null);
                         DoEmissionArea(mtl);
                         m_materialEditor.TextureScaleOffsetProperty(albedoMap);
@@ -169,6 +170,17 @@ namespace NowhereUnityEditor.Rendering{
                     }
                 }
 
+                void DoRampArea(Material mtl) {
+
+                    m_materialEditor.ShaderProperty(rampFactor, s_styles.rampText);
+                    EditorGUI.indentLevel++;
+                    {
+                        m_materialEditor.TexturePropertySingleLine(new GUIContent("Directional Light"), rampMap);
+                        m_materialEditor.TexturePropertySingleLine(new GUIContent("Point Light"), rampPointMap);
+                    }
+                    EditorGUI.indentLevel--;
+                }
+
                 void DoEmissionArea(Material mtl) {
 
                     bool showHelp       = !HasValidEmissiveKeyword(mtl);
@@ -208,6 +220,7 @@ namespace NowhereUnityEditor.Rendering{
                     albedoColor         = FindProperty("_Color", props);
                     alphaCutoff         = FindProperty("_Cutoff", props, false);
                     rampMap             = FindProperty("_ToonTex", props);
+                    rampPointMap        = FindProperty("_ToonPointLightTex", props);
                     rampFactor          = FindProperty("_ToonFactor", props);
                     occlusionFactor     = FindProperty("_OcclusionStrength", props);
                     occlusionMap        = FindProperty("_OcclusionMap", props);

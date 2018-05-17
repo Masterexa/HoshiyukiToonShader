@@ -8,6 +8,7 @@ Shader "HoshiyukiToon/LitFade" {
 		_Color		("Color", Color) = (0.5859,0.5859,0.5859,1)
 		_MainTex	("Albedo (RGB)", 2D) = "white" {}
 		_ToonTex	( "Ramp Texture", 2D ) = "white"{}
+		_ToonPointLightTex("Point Light Ramp Texture", 2D) = "white"{}
 		_ToonFactor	( "Ramp Factor", Range( 0,1 ) ) = 1
 		// Occlusion
 		_OcclusionStrength	( "Occlusion Strength", Range( 0,1 ) )=0
@@ -31,6 +32,7 @@ Shader "HoshiyukiToon/LitFade" {
 			#pragma surface surf ToonRamp fullforwardshadows alpha:fade
 			#pragma lighting ToonRamp exclude_path:prepass
 			#pragma target 3.0
+			#define NWH_TOON_POINTLIGHTRAMP
 			#include "HoshiyukiToonLighting.cginc"
 
 			sampler2D	_MainTex;

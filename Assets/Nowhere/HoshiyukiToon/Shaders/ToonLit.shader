@@ -9,6 +9,7 @@ Shader "HoshiyukiToon/Lit" {
 		_MainTex			("Albedo (RGB)", 2D) = "white" {}
 		_Cutoff				("Clip Threshold", Range(0,1)) = 0.1
 		_ToonTex			("Ramp Texture", 2D) = "white"{}
+		_ToonPointLightTex	("Point Light Ramp Texture", 2D) = "white"{}
 		_ToonFactor			("Ramp Factor", Range( 0,1 ) ) = 1
 		// Occlusion
 		_OcclusionStrength	("Occlusion Strength", Range(0,1))=0
@@ -33,6 +34,7 @@ Shader "HoshiyukiToon/Lit" {
 			#pragma surface surf ToonRamp fullforwardshadows addshadow
 			#pragma lighting ToonRamp exclude_path:prepass
 			#pragma target 3.0
+			#define NWH_TOON_POINTLIGHTRAMP
 			#include "HoshiyukiToonLighting.cginc"
 
 			fixed		_Cutoff;
