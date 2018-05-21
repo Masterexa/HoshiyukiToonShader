@@ -1,6 +1,0 @@
-#ifndef NWH_HTS_SURFACE_OUTLINE_INC
-#define NWH_HTS_SURFACE_OUTLINE_INC
-
-
-
-#endif

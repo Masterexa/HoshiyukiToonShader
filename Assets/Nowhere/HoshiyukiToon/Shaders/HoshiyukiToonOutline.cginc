@@ -14,12 +14,12 @@ inline float4 HTS_expandVertexOutline(float size, half3 projNormal, float4 projP
 	return projPosition;
 }
 
-inline half3 HTS_calculateVertexOutlineGI(half3 normal) {
+inline half3 HTS_calculateVertexOutlineGI() {
 
-	return ShadeSHSimpleToon();
+	return SHEvalLinearL0L1_Toon();
 }
 
-inline half3 HTS_calculatePixelOutlineGI(half3 vertexGI,float4 worldPos) {
+inline half3 HTS_calculatePixelOutlineGI(half3 ambient,float3 worldPos) {
 
 	// Sample Proxy Volume GI
 	#if defined(UNITY_LIGHT_PROBE_PROXY_VOLUME)
@@ -29,7 +29,7 @@ inline half3 HTS_calculatePixelOutlineGI(half3 vertexGI,float4 worldPos) {
 		}
 	#endif
 
-	return vertexGI;
+	return ambient;
 }
 
 
