@@ -3,6 +3,7 @@
 
 /* includes */
 #include "UnityCG.cginc"
+#include "HoshiyukiToonCommon.cginc"
 
 
 inline float4 HTS_expandVertexOutline(float size, half3 projNormal, float4 projPosition) {
@@ -13,6 +14,23 @@ inline float4 HTS_expandVertexOutline(float size, half3 projNormal, float4 projP
 	return projPosition;
 }
 
+inline half3 HTS_calculateVertexOutlineGI(half3 normal) {
+
+	return ShadeSHSimpleToon();
+}
+
+inline half3 HTS_calculatePixelOutlineGI(half3 vertexGI,float4 worldPos) {
+
+	// Sample Proxy Volume GI
+	#if defined(UNITY_LIGHT_PROBE_PROXY_VOLUME)
+		if( unity_ProbeVolumeParams.x == 1 )
+		{
+			return SHEvalLinearL0L1_SampleProbeVolume_Toon(worldPos);
+		}
+	#endif
+
+	return vertexGI;
+}
 
 
 #endif
