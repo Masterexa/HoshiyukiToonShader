@@ -30,7 +30,7 @@ Shader "HoshiyukiToon/Outline"
 				//#pragma multi_compile_fwdbase
 				#pragma multi_compile_fog	// make fog work
 				#include "HoshiyukiToonCommon.cginc"
-
+				#include "HoshiyukiToonOutline.cginc"
 
 				/* --- Uniforms --- */
 					uniform float	_OutlineSize;
@@ -74,10 +74,13 @@ Shader "HoshiyukiToon/Outline"
 
 						// Outline translation
 						//#ifdef UNITY_Z_0_FAR_FROM_CLIPSPACE
-							o.vertex.xy += offset * fov * UNITY_Z_0_FAR_FROM_CLIPSPACE( o.vertex.z ) * edge;
+							//o.vertex.xy += offset * fov * UNITY_Z_0_FAR_FROM_CLIPSPACE( o.vertex.z ) * edge;
 						//#else
 							//o.vertex.xy += offset * edge * fov * (o.vertex.z);
 						//#endif
+
+
+						o.vertex = HTS_expandVertexOutline(_OutlineSize, TransformViewToProjection(norm), o.vertex);
 
 
 						// GI Calclation
