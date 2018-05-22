@@ -77,7 +77,7 @@ Shader "HoshiyukiToon/Outline"
 						o.color		= _OutlineColor;
 
 						// Expand vertex
-						o.vertex = HTS_expandVertexOutline(_OutlineSize, TransformViewToProjection(N), o.vertex);
+						o.vertex = HTS_expandVertexOutline(_OutlineSize, TransformViewToProjection(N), o.vertex, 0);
 						// calculate GI
 						o.ambient = HTS_calculateVertexOutlineGI();
 

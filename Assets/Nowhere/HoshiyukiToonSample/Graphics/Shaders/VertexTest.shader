@@ -11,8 +11,14 @@
 		_ToonTex	("Ramp Texture", 2D) = "white"{}
 		_ToonFactor	("Ramp Factor", Range( 0,1 ) ) = 1
 
+
+		// Vertex modify
 		_Freq("Freq", Float)=1
 		_Scale("Scale", Float)=0.1
+		// Clip mask
+		_ClipMaskTex("Clip Mask Tex", 2D)="white"{}
+		_ClipMaskThreshold("Threshold", Range(0,1))=0.5
+
 
         // OPTIONAL : Outline Variables
         _OutlineColor	("Outline Color", Color) = (.0,.0,.0,1)
@@ -21,11 +27,14 @@
 	CGINCLUDE
 		#include <UnityCG.cginc>
 
-		#define APPDATA_T	appdata_base
+		#define APPDATA_T	appdata_full
 
 		// variables
-		uniform float _Freq;
-		uniform float _Scale;
+		uniform float		_Freq;
+		uniform float		_Scale;
+
+		uniform sampler2D	_ClipMaskTex;
+		uniform	fixed		_ClipMaskThreshold;
 
 
 		void vertexModify(inout APPDATA_T v) {
@@ -35,13 +44,20 @@
 			v.vertex.xyz += (t * _Scale) * float3(1,0,0);
 		}
 
+		void clipMask(float2 texcoord) {
+
+			fixed a = tex2D(_ClipMaskTex, texcoord).a;
+			clip(a - _ClipMaskThreshold);
+		}
+
 	ENDCG
 
 
 	SubShader {
 		Tags { "RenderType"="Opaque" }
 		LOD 200
-		
+		Cull Back
+
 		CGPROGRAM
 			// REQUIRED : Minimum shader options
 			#pragma surface surf ToonRamp fullforwardshadows addshadow vertex:vert
@@ -69,6 +85,8 @@
 				fixed4	col = tex2D(_MainTex, IN.uv_MainTex) * _Color;
 				half	oc	= lerp(1, tex2D(_OcclusionMap, IN.uv_MainTex).g, _OcclusionStrength);
 
+				clipMask(IN.uv_MainTex);
+
 				o.Albedo.rgb	= col.rgb;
 				o.Occlusion		= oc;
 				o.Alpha			= col.a;
@@ -80,7 +98,7 @@
 		{
 			Name "OUTLINE"
 			Tags{"LightMode" = "Always" "Queue"="Transparent"}
-			Cull Front
+			Cull Back
 			ZWrite Off
 			ColorMask RGB
 			Blend SrcAlpha OneMinusSrcAlpha
@@ -90,25 +108,28 @@
 				#pragma vertex vert
 				#pragma fragment frag
 				#pragma multi_compile_fog	// make fog work
-				#include <Assets/Nowhere/HoshiyukiToon/Shaders/HoshiyukiToonCommon.cginc>
+
+				//#define HTS_FRONTSIDE_OUTLINE
 				#include <Assets/Nowhere/HoshiyukiToon/Shaders/HoshiyukiToonOutline.cginc>
 
 				/* --- Uniforms --- */
 					uniform float	_OutlineSize;
 					uniform fixed4	_OutlineColor;
-				/* end */
 
+					uniform float4	_ClipMaskTex_ST;
+				/* end */
 
 				/* --- Typedef --- */
 					/** ピクセルシェーダー入力.
 					 */
 					struct v2f
 					{
-						UNITY_FOG_COORDS(2)
+						UNITY_FOG_COORDS(3)
 						float4	vertex		: SV_POSITION;
 						fixed4	color		: COLOR;
-						half3	ambient		: TEXCOORD0;
-						float3	worldPos	: TEXCOORD1;
+						float2	texcoord	: TEXCOORD0;
+						half3	ambient		: TEXCOORD1;
+						float3	worldPos	: TEXCOORD2;
 					};
 				/* end */
 
@@ -122,11 +143,13 @@
 					{
 						v2f o;
 						vertexModify(v);
-
-
-						o.vertex	= v.vertex;
-						HTS_vertexOutlineOperation(_OutlineSize, v.normal, o.vertex, o.ambient, o.worldPos);
 						
+						o.vertex	= v.vertex;
+						o.texcoord	= v.texcoord.xy;
+						o.color		= _OutlineColor;
+						HTS_vertexOutlineOperation(_OutlineSize, 1, v.normal, o.vertex, o.ambient, o.worldPos);
+						
+
 						UNITY_TRANSFER_FOG(o,o.vertex);
 						return o;
 					}
@@ -136,6 +159,8 @@
 					 */
 					fixed4 frag (v2f i) : SV_Target
 					{
+						clipMask(i.texcoord);
+
 						// Apply color and GI
 						half4 col	= i.color;
 						col.rgb		*= HTS_calculatePixelOutlineGI(i.ambient, i.worldPos);
