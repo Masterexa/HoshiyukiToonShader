@@ -19,7 +19,7 @@ Shader "HoshiyukiToon/Outline"
 			Name "OUTLINE"
 			Tags{"LightMode" = "Always" "Queue"="Transparent"}
 			Cull Front
-			ZWrite On
+			ZWrite Off
 			ColorMask RGB
 			Blend SrcAlpha OneMinusSrcAlpha
 
@@ -29,6 +29,9 @@ Shader "HoshiyukiToon/Outline"
 				#pragma fragment frag
 				//#pragma multi_compile_fwdbase
 				#pragma multi_compile_fog	// make fog work
+
+				//#define HTS_FRONTSIDE_OUTLINE
+
 				#include "HoshiyukiToonCommon.cginc"
 				#include "HoshiyukiToonOutline.cginc"
 
