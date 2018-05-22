@@ -35,5 +35,18 @@ inline half3 HTS_calculatePixelOutlineGI(half3 ambient,float3 worldPos) {
 	return ambient;
 }
 
+inline void HTS_vertexOutlineOperation(float size, float3 N, inout float4 vertex, inout half3 ambient, inout float3 worldPos)
+{
+	N = normalize(mul((float3x3)UNITY_MATRIX_IT_MV, float4(N, 0)));
+
+	// transformations
+	worldPos	= mul(unity_ObjectToWorld, vertex).xyz;
+	vertex		= UnityObjectToClipPos(vertex);
+
+	// Expand vertex
+	vertex = HTS_expandVertexOutline(size, TransformViewToProjection(N), vertex);
+	// calculate GI
+	ambient = HTS_calculateVertexOutlineGI();
+}
 
 #endif

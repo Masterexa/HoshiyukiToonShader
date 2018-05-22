@@ -34,6 +34,7 @@
 
 			v.vertex.xyz += (t * _Scale) * float3(1,0,0);
 		}
+
 	ENDCG
 
 
@@ -111,6 +112,8 @@
 					};
 				/* end */
 
+
+
 				/* --- Shader Functions --- */
 					/** 頂点シェーダー.
 					 *
@@ -118,21 +121,12 @@
 					v2f vert (APPDATA_T v)
 					{
 						v2f o;
-						float3	N = normalize(mul((float3x3)UNITY_MATRIX_IT_MV, float4(v.normal, 0)));
-
 						vertexModify(v);
 
-						// transformations
-						o.worldPos	= mul(unity_ObjectToWorld, v.vertex).xyz;
-						o.vertex	= UnityObjectToClipPos(v.vertex);
-						o.color		= _OutlineColor;
 
-						// Expand vertex
-						o.vertex = HTS_expandVertexOutline(_OutlineSize, TransformViewToProjection(N), o.vertex);
-						// calculate GI
-						o.ambient = HTS_calculateVertexOutlineGI();
-
-
+						o.vertex	= v.vertex;
+						HTS_vertexOutlineOperation(_OutlineSize, v.normal, o.vertex, o.ambient, o.worldPos);
+						
 						UNITY_TRANSFER_FOG(o,o.vertex);
 						return o;
 					}
