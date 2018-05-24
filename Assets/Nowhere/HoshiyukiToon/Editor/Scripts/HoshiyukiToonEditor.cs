@@ -32,13 +32,16 @@ namespace HoshiyukiToonShaderEditor{
             class Styles {
                 public GUIContent renderingMode  = new GUIContent("Rendering Mode", "Rendering Mode");
                 public GUIContent albedoText     = new GUIContent("Albedo", "Albedo(RGB) and Transparency(Alpha)");
-                public GUIContent alphaCutoffText= new GUIContent("Alpha Cutoff", "");
-                public GUIContent rampText       = new GUIContent("Ramp", "");
+                public GUIContent alphaCutoffText= new GUIContent("Alpha Cutoff", "Threshold of Cutoff(A)");
 
-                public GUIContent occlusionText  = new GUIContent("Occlusion", "");
+                public GUIContent rampText              = new GUIContent("Ramp", "");
+                public GUIContent rampDirectionalText   = new GUIContent("Directional", "Ramp texture of directional light");
+                public GUIContent rampPointText         = new GUIContent("Point", "Ramp texture of point light");
+
+                public GUIContent occlusionText  = new GUIContent("Occlusion", "Occlusion(G)");
                 public GUIContent emissionText   = new GUIContent("Emission", "");
 
-                public GUIContent lineSizeText   = new GUIContent("Size", "Size of Outline(Viewport Space)");
+                public GUIContent lineSizeText   = new GUIContent("Size", "Size of outline(Viewport Space)");
                 public GUIContent lineColorText  = new GUIContent("Color", "Color(RGB) and Transparency(Alpha)");
 
                 public GUIContent standardGIText = new GUIContent("Use Traditional GI", "");
@@ -145,8 +148,8 @@ namespace HoshiyukiToonShaderEditor{
                     m_materialEditor.ShaderProperty(rampFactor, s_styles.rampText);
                     EditorGUI.indentLevel++;
                     {
-                        m_materialEditor.TexturePropertySingleLine(new GUIContent("Directional Light"), rampMap);
-                        m_materialEditor.TexturePropertySingleLine(new GUIContent("Point Light"), rampPointMap);
+                        m_materialEditor.TexturePropertySingleLine(s_styles.rampDirectionalText, rampMap);
+                        m_materialEditor.TexturePropertySingleLine(s_styles.rampPointText, rampPointMap);
                     }
                     EditorGUI.indentLevel--;
                 }
