@@ -70,6 +70,7 @@ namespace NowhereUnityEditor.Rendering{
 
                 MaterialProperty    lineColor;
                 MaterialProperty    lineSize;
+                MaterialProperty    lineCull;
                 
                 MaterialProperty    cullMode;
                 MaterialProperty    useStandardGI;
@@ -206,7 +207,11 @@ namespace NowhereUnityEditor.Rendering{
                         GUILayout.Label(s_styles.lineSettingsText, EditorStyles.boldLabel);
 
                         m_materialEditor.ShaderProperty(lineColor, s_styles.lineColorText);
-                        m_materialEditor.ShaderProperty(lineSize, s_styles.lineSizeText);    
+                        m_materialEditor.ShaderProperty(lineSize, s_styles.lineSizeText);
+                        if( lineCull!=null )
+                        {
+                            m_materialEditor.ShaderProperty(lineCull, s_styles.cullModeText);
+                        }
                     }
                 }
 
@@ -227,8 +232,9 @@ namespace NowhereUnityEditor.Rendering{
                     emissionColor       = FindProperty("_EmissionColor", props);
                     emissionMap         = FindProperty("_EmissionMap", props);
                     // Outline
-                    lineColor           = FindProperty("_OutlineColor", props, false);
-                    lineSize            = FindProperty("_OutlineSize", props, false);
+                    lineColor   = FindProperty("_OutlineColor", props, false);
+                    lineSize    = FindProperty("_OutlineSize", props, false);
+                    lineCull    = FindProperty("_OutlineCull", props, false);
                     // Option
                     cullMode                = FindProperty("_Cull", props);
                     useStandardGI           = FindProperty("_UseStandardGI", props);

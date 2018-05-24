@@ -6,12 +6,12 @@
 #include "HoshiyukiToonCommon.cginc"
 
 
-inline float4 HTS_expandVertexOutline(float size, half3 projNormal, float4 projPosition, float isFrontFace) {
+inline float4 HTS_expandVertexOutline(float size, half3 projNormal, float4 projPosition, float isBackCull) {
 
 	float fov = atan(1 / unity_CameraProjection._m11) * 2;
 
 	projPosition.xy += projNormal.xy * UNITY_Z_0_FAR_FROM_CLIPSPACE(projPosition.z) * size;
-	projPosition.z -= 0.01 * isFrontFace;
+	projPosition.z -= 0.01 * isBackCull;
 	return projPosition;
 }
 
@@ -33,7 +33,7 @@ inline half3 HTS_calculatePixelOutlineGI(half3 ambient,float3 worldPos) {
 	return ambient;
 }
 
-inline void HTS_vertexOutlineOperation(float size, float isFront, float3 N, inout float4 vertex, inout half3 ambient, inout float3 worldPos)
+inline void HTS_vertexOutlineOperation(float size, float isBackCull, float3 N, inout float4 vertex, inout half3 ambient, inout float3 worldPos)
 {
 	N = normalize(mul((float3x3)UNITY_MATRIX_IT_MV, float4(N, 0)));
 
@@ -42,9 +42,15 @@ inline void HTS_vertexOutlineOperation(float size, float isFront, float3 N, inou
 	vertex		= UnityObjectToClipPos(vertex);
 
 	// Expand vertex
-	vertex = HTS_expandVertexOutline(size, TransformViewToProjection(N), vertex, isFront);
+	vertex = HTS_expandVertexOutline(size, TransformViewToProjection(N), vertex, isBackCull);
 	// calculate GI
 	ambient = HTS_calculateVertexOutlineGI();
+}
+
+inline void HTS_fragmentOutlineOperation(fixed4 albedo, float3 worldPos, half3 ambient, out half4 outColor)
+{
+	outColor		= albedo;
+	outColor.rgb	*= HTS_calculatePixelOutlineGI(ambient, worldPos);
 }
 
 #endif

@@ -27,13 +27,105 @@ Shader "HoshiyukiToon/LitOutline"
 		// Outline
 		_OutlineColor( "Outline Color", Color ) = (.0,.0,.0,0.89)
 		_OutlineSize( "Outline Width", Range( .001,.03 ) ) = .002
+
+		[Enum(UnityEngine.Rendering.CullMode)]_OutlineCull("Outline Cull", Float)=1
 	}
 	SubShader
 	{
 		Tags{"RenderType" = "Opaque"}
 		UsePass "HoshiyukiToon/Lit/FORWARD"
 		UsePass "HoshiyukiToon/Lit/SHADOWCASTER"
-		UsePass "HoshiyukiToon/Outline/OUTLINE"
+		//UsePass "HoshiyukiToon/Outline/OUTLINE"
+
+		Pass
+		{
+			Name "OUTLINE"
+			Tags{"LightMode" = "Always" "Queue"="Transparent"}
+			Cull [_OutlineCull]
+			ZWrite Off
+			ColorMask RGB
+			Blend SrcAlpha OneMinusSrcAlpha
+
+			CGPROGRAM
+				#pragma target 3.0
+				#pragma vertex vert
+				#pragma fragment frag
+				#pragma multi_compile_fog	// make fog work
+				#pragma multi_compile _ NWH_TOON_CUTOUT
+
+				//#define HTS_FRONTSIDE_OUTLINE
+				#include <Assets/Nowhere/HoshiyukiToon/Shaders/HoshiyukiToonOutline.cginc>
+
+				/* --- Uniforms --- */
+					uniform float	_OutlineSize;
+					uniform fixed4	_OutlineColor;
+					uniform	fixed	_OutlineCull;
+
+					fixed		_Cutoff;
+					sampler2D	_MainTex;
+					fixed4		_Color;
+				/* end */
+
+				/* --- Typedef --- */
+					/** ピクセルシェーダー入力.
+					 */
+					struct v2f
+					{
+						UNITY_FOG_COORDS(3)
+						float4	vertex		: SV_POSITION;
+						fixed4	color		: COLOR;
+						float2	texcoord	: TEXCOORD0;
+						half3	ambient		: TEXCOORD1;
+						float3	worldPos	: TEXCOORD2;
+					};
+				/* end */
+
+					void clipMask(float2 texcoord) {
+
+						#ifdef NWH_TOON_CUTOUT
+							fixed a = tex2D(_MainTex, texcoord).a * _Color.a;
+							clip(a - _Cutoff);
+						#endif
+					}
+
+				/* --- Shader Functions --- */
+					/** 頂点シェーダー.
+					 *
+					 */
+					v2f vert (appdata_full v)
+					{
+						v2f o;
+						
+						fixed isFront = step(0.1, abs(1-_OutlineCull));
+
+						o.vertex	= v.vertex;
+						o.texcoord	= v.texcoord.xy;
+						o.color		= _OutlineColor;
+						HTS_vertexOutlineOperation(_OutlineSize, isFront, v.normal, o.vertex, o.ambient, o.worldPos);
+						
+
+						UNITY_TRANSFER_FOG(o,o.vertex);
+						return o;
+					}
+			
+					/** フラグメントシェーダー.
+					 *
+					 */
+					fixed4 frag (v2f i) : SV_Target
+					{
+						clipMask(i.texcoord);
+
+						// Apply color and GI
+						half4 col	= i.color;
+						col.rgb		*= HTS_calculatePixelOutlineGI(i.ambient, i.worldPos);
+
+						// Apply fog
+						UNITY_APPLY_FOG(i.fogCoord, col);
+						return col;
+					}
+				/* end */
+			ENDCG
+		}
 	}
 	Fallback "Diffuse"
 	CustomEditor "NowhereUnityEditor.Rendering.HoshiyukiToonEditor"

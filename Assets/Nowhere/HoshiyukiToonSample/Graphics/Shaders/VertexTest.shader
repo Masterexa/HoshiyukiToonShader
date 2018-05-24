@@ -56,7 +56,7 @@
 	SubShader {
 		Tags { "RenderType"="Opaque" }
 		LOD 200
-		Cull Back
+		Cull Off
 
 		CGPROGRAM
 			// REQUIRED : Minimum shader options
