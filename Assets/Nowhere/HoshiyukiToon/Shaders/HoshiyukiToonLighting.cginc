@@ -35,7 +35,7 @@
 	{
 		NdL = NdL*0.5 + 0.5;
 
-	#if defined(NWH_TOON_POINTLIGHTRAMP) && !defined(USING_DIRECTIONAL_LIGHT)
+	#if defined(HTS_USE_POINTLIGHTRAMP) && !defined(USING_DIRECTIONAL_LIGHT)
 		sampler2D toon = _ToonPointLightTex;
 	#else
 		sampler2D toon = _ToonTex;
