@@ -33,7 +33,7 @@ inline half3 HTS_calculatePixelOutlineGI(half3 ambient,float3 worldPos) {
 	return ambient;
 }
 
-inline void HTS_vertexOutlineOperation(float size, float isBackCull, float3 N, inout float4 vertex, inout half3 ambient, inout float3 worldPos)
+inline void HTS_vertexOutlineOperation(float size, float isBackCull, float3 N, inout float4 vertex, out half3 ambient, out float3 worldPos)
 {
 	N = normalize(mul((float3x3)UNITY_MATRIX_IT_MV, float4(N, 0)));
 

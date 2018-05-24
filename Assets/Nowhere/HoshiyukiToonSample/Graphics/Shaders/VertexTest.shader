@@ -147,7 +147,7 @@
 						o.vertex	= v.vertex;
 						o.texcoord	= v.texcoord.xy;
 						o.color		= _OutlineColor;
-						HTS_vertexOutlineOperation(_OutlineSize, 1, v.normal, o.vertex, o.ambient, o.worldPos);
+						HTS_vertexOutlineOperation(_OutlineSize, /*is back face culling*/1, v.normal, /*inout*/o.vertex, /*out*/o.ambient, /*out*/o.worldPos);
 						
 
 						UNITY_TRANSFER_FOG(o,o.vertex);
@@ -162,8 +162,8 @@
 						clipMask(i.texcoord);
 
 						// Apply color and GI
-						half4 col	= i.color;
-						col.rgb		*= HTS_calculatePixelOutlineGI(i.ambient, i.worldPos);
+						half4 col;
+						HTS_fragmentOutlineOperation(i.color, i.worldPos, i.ambient, /*out*/col);
 
 						// Apply fog
 						UNITY_APPLY_FOG(i.fogCoord, col);

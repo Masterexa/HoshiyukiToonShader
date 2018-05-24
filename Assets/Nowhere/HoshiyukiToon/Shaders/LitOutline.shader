@@ -37,6 +37,7 @@ Shader "HoshiyukiToon/LitOutline"
 		UsePass "HoshiyukiToon/Lit/SHADOWCASTER"
 		//UsePass "HoshiyukiToon/Outline/OUTLINE"
 
+		// Outline pass
 		Pass
 		{
 			Name "OUTLINE"
@@ -96,12 +97,12 @@ Shader "HoshiyukiToon/LitOutline"
 					{
 						v2f o;
 						
-						fixed isFront = step(0.1, abs(1-_OutlineCull));
+						fixed isBackCull = step(0.1, abs(1-_OutlineCull));
 
 						o.vertex	= v.vertex;
 						o.texcoord	= v.texcoord.xy;
 						o.color		= _OutlineColor;
-						HTS_vertexOutlineOperation(_OutlineSize, isFront, v.normal, o.vertex, o.ambient, o.worldPos);
+						HTS_vertexOutlineOperation(_OutlineSize, isBackCull, v.normal, /*inout*/o.vertex, /*out*/o.ambient, /*out*/o.worldPos);
 						
 
 						UNITY_TRANSFER_FOG(o,o.vertex);
@@ -116,8 +117,8 @@ Shader "HoshiyukiToon/LitOutline"
 						clipMask(i.texcoord);
 
 						// Apply color and GI
-						half4 col	= i.color;
-						col.rgb		*= HTS_calculatePixelOutlineGI(i.ambient, i.worldPos);
+						half4 col;
+						HTS_fragmentOutlineOperation(i.color, i.worldPos, i.ambient, /*out*/col);
 
 						// Apply fog
 						UNITY_APPLY_FOG(i.fogCoord, col);

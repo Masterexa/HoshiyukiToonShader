@@ -68,18 +68,11 @@ Shader "HoshiyukiToon/Outline"
 					 */
 					v2f vert (appdata v)
 					{
+						// Vertex calculation
 						v2f o;
-						float3	N = normalize(mul((float3x3)UNITY_MATRIX_IT_MV, float4(v.normal, 0)));
-
-						// transformations
-						o.worldPos	= mul(unity_ObjectToWorld, v.vertex).xyz;
-						o.vertex	= UnityObjectToClipPos(v.vertex);
+						o.vertex	= v.vertex;
 						o.color		= _OutlineColor;
-
-						// Expand vertex
-						o.vertex = HTS_expandVertexOutline(_OutlineSize, TransformViewToProjection(N), o.vertex, 0);
-						// calculate GI
-						o.ambient = HTS_calculateVertexOutlineGI();
+						HTS_vertexOutlineOperation(_OutlineSize, /*is front face culling*/0, v.normal, /*inout*/o.vertex, /*out*/o.ambient, /*out*/o.worldPos);
 
 
 						UNITY_TRANSFER_FOG(o,o.vertex);
@@ -92,8 +85,8 @@ Shader "HoshiyukiToon/Outline"
 					fixed4 frag (v2f i) : SV_Target
 					{
 						// Apply color and GI
-						half4 col	= i.color;
-						col.rgb		*= HTS_calculatePixelOutlineGI(i.ambient, i.worldPos);
+						half4 col;
+						HTS_fragmentOutlineOperation(i.color, i.worldPos, i.ambient, /*out*/col);
 
 						// Apply fog
 						UNITY_APPLY_FOG(i.fogCoord, col);
