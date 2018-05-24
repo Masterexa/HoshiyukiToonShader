@@ -95,9 +95,9 @@
         Pass
 		{
 			Name "OUTLINE"
-			Tags{"LightMode" = "ForwardBase" "Queue"="Transparent"}
+			Tags{"LightMode" = "ForwardBase" "Queue"="Transparent+10"}
 			Cull [_OutlineCull]
-			ZWrite On
+			ZWrite Off
 			ColorMask RGB
 			Blend SrcAlpha OneMinusSrcAlpha
 
