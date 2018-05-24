@@ -53,5 +53,5 @@ Shader "HoshiyukiToon/LitFade" {
 		UsePass "HoshiyukiToon/Lit/SHADOWCASTER"
 	}
 	FallBack "Diffuse"
-	CustomEditor "NowhereUnityEditor.Rendering.HoshiyukiToonEditor"
+	CustomEditor "HoshiyukiToonShaderEditor.SurfaceShaderInspector"
 }
