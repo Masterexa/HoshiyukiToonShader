@@ -84,7 +84,7 @@ namespace NowhereUnityEditor.Rendering{
             #region Properties
             #endregion
 
-            #region Events
+            #region GUI Methods
                 public override void OnGUI(MaterialEditor materialEditor, MaterialProperty[] props) {
             
                     if( s_styles==null )
@@ -137,9 +137,8 @@ namespace NowhereUnityEditor.Rendering{
                             MaterialChanged((Material)it);
                     }
                 }
-            #endregion
 
-            #region Pipeline
+
                 void BlendModeProp() {
                     if( (m_editFlag&EditFlag.ModeEditable)==0 )
                     {
@@ -214,7 +213,9 @@ namespace NowhereUnityEditor.Rendering{
                         }
                     }
                 }
+            #endregion
 
+            #region Pipeline
                 void FindProperties(MaterialProperty[] props) {
                     
                     m_editFlag = EditFlag.None;
