@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 78168c44f1bc4b940bc7e6671a5bce71
+timeCreated: 1526397057
+licenseType: Free
+ShaderImporter:
+  defaultTextures:
+  - _MainTex: {instanceID: 0}
+  - _ToonTex: {fileID: 2800000, guid: db2775c46046b454981ff2e14d5fea78, type: 3}
+  - _ToonPointLightTex: {fileID: 2800000, guid: 6ad451bf77b60674f84729a96d3fb7cd, type: 3}
+  - _OcclusionMap: {instanceID: 0}
+  - _EmissionMap: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
