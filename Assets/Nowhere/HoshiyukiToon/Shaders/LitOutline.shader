@@ -34,15 +34,14 @@ Shader "HoshiyukiToon/LitOutline"
 		Tags{"RenderType" = "Opaque"}
 		UsePass "HoshiyukiToon/Lit/FORWARD"
 		UsePass "HoshiyukiToon/Lit/SHADOWCASTER"
-		UsePass "Hidden/HoshiyukiToon/OutlineForLit/OUTLINE"
 
 		// Outline pass
 		Pass
 		{
 			Name "OUTLINE"
-			Tags{"LightMode" = "ForwardBase" "Queue"="Transparent+10"}
+			Tags{"LightMode" = "ForwardBase" "Queue"="Transparent"}
 			Cull [_OutlineCull]
-			ZWrite Off
+			ZWrite On
 			ColorMask RGB
 			Blend SrcAlpha OneMinusSrcAlpha
 
@@ -52,7 +51,7 @@ Shader "HoshiyukiToon/LitOutline"
 				#pragma fragment fragOutlineBase
 				#pragma multi_compile_fog	// make fog work
 				#pragma multi_compile _ NWH_TOON_CUTOUT
-
+			
 				#include "HoshiyukiToonSurfaceOutlineBase.cginc"
 			ENDCG
 		}

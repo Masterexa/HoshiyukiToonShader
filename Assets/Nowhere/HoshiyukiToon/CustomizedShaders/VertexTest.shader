@@ -97,7 +97,7 @@
 			Name "OUTLINE"
 			Tags{"LightMode" = "ForwardBase" "Queue"="Transparent+10"}
 			Cull [_OutlineCull]
-			ZWrite Off
+			ZWrite On
 			ColorMask RGB
 			Blend SrcAlpha OneMinusSrcAlpha
 
