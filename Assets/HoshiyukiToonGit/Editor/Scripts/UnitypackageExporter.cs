@@ -16,7 +16,7 @@ namespace HoshiyukiToonShaderEditor{
             #region Fields
                 static readonly string[]    sk_exportAssetPathes = {
                     "Assets/Editor Default Resources/HoshiyukiToonEditor",
-                    "Assets/ScriptTemplates/100-Shader__HoshiyukiToon Surface Shader-NewHTSSurfaceShader.shader.txt",
+                    "Assets/ScriptTemplates",
                     "Assets/Nowhere/HoshiyukiToon"
                 };
 			#endregion
