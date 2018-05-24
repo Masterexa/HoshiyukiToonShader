@@ -39,9 +39,9 @@ Shader "HoshiyukiToon/LitOutline"
 		Pass
 		{
 			Name "OUTLINE"
-			Tags{"LightMode" = "ForwardBase" "Queue"="Transparent+10"}
+			Tags{"LightMode" = "ForwardBase" "Queue"="Transparent"}
 			Cull [_OutlineCull]
-			ZWrite Off
+			ZWrite On
 			ColorMask RGB
 			Blend SrcAlpha OneMinusSrcAlpha
 
