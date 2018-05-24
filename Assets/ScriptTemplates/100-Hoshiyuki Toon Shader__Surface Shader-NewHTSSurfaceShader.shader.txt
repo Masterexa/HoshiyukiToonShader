@@ -2,21 +2,21 @@ Shader "HoshiyukiToon/Custom/#NAME#" {
 	Properties {
         // Your own variables
 		_MainTex	("Main Texture", 2D) ="white"{}
-		_Color		("Color", Color) = (0.58,0.58,0.58,1)
-
+		_Color		("Color", Color) = (1.0,1.0,1.0,1)
 
 		// REQUIRED : Lit variables
-		_ToonTex	("Ramp Texture", 2D) = "white"{}
+		_ToonTex	("Directional Ramp", 2D) = "white"{}
+        _ToonPointLightTex("Point Ramp", 2D)="white"{}
 		_ToonFactor	("Ramp Factor", Range( 0,1 ) ) = 1
 
-        // OPTIONAL : Outline Variables
-        _OutlineColor	("Outline Color", Color) = (.0,.0,.0,1)
-		_OutlineSize	("Outline Width", Range(.001,.03)) = .002
+        // OPTIONAL:
+        [Enum(UnityEngine.Rendering.CullMode)]_Cull("Cull Mode", Float)=2
 	}
 	SubShader {
 		Tags { "RenderType"="Opaque" }
 		LOD 200
-		
+		Cull [_Cull]
+
 		CGPROGRAM
 			// REQUIRED : Minimum shader options
 			#pragma surface surf ToonRamp fullforwardshadows addshadow
@@ -24,15 +24,19 @@ Shader "HoshiyukiToon/Custom/#NAME#" {
 			#include <Assets/Nowhere/HoshiyukiToon/Shaders/HoshiyukiToonLighting.cginc>
 
 
+            // OPTIONAL : if this keyword is defined, the ramp texture of point light is enabled.
+            #define HTS_USE_POINTLIGHTRAMP
+
+
 			struct Input {
 				float2 uv_MainTex;
 			};
 
+            // variables
 			sampler2D	_MainTex;
 			fixed4		_Color;
 
-			/** Your own surface shader
-			 */
+
 			void surf (Input IN, inout SurfaceOutputStandardSpecular o) {
 				fixed4 col = tex2D(_MainTex, IN.uv_MainTex) * _Color;
 
@@ -40,9 +44,6 @@ Shader "HoshiyukiToon/Custom/#NAME#" {
 				o.Alpha			= col.a;
 			}
 		ENDCG
-
-        // OPTIONAL : Outline Pass
-        UsePass "HoshiyukiToon/Outline/OUTLINE"
 
 
 		// OPTIONAL : Shadowcaster for two sided face
