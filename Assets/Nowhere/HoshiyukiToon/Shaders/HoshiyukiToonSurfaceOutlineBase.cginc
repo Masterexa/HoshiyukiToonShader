@@ -1,3 +1,6 @@
+/**
+* @date 2018/5/24
+*/
 #ifndef NWH_HTS_SURFACE_OUTLINE_BASE_INC
 #define NWH_HTS_SURFACE_OUTLINE_BASE_INC
 
@@ -17,9 +20,7 @@ fixed4		_Color;
 
 
 /* typedefs */
-	/** ピクセルシェーダー入力.
-	 */
-	struct v2f {
+	struct Input{
 		UNITY_FOG_COORDS(3)
 		float4	vertex		: SV_POSITION;
 		fixed4	color : COLOR;
@@ -44,12 +45,12 @@ fixed4		_Color;
 
 
 /* Shader kernels */
-	/** 頂点シェーダー.
+	/** Vertex shader.
 	 *
 	 */
-	v2f vertOutlineBase (appdata_full v)
+	Input vertOutlineBase (appdata_full v)
 	{
-		v2f o;
+		Input o;
 						
 		fixed isBackCull = step(0.1, abs(1-_OutlineCull));
 
@@ -63,10 +64,10 @@ fixed4		_Color;
 		return o;
 	}
 			
-	/** フラグメントシェーダー.
+	/** Pixel shader.
 	 *
 	 */
-	fixed4 fragOutlineBase (v2f i) : SV_Target
+	fixed4 fragOutlineBase (Input i) : SV_Target
 	{
 		clipMask(i.texcoord);
 

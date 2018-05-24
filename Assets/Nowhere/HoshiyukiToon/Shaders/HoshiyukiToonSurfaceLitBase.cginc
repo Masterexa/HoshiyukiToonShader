@@ -1,3 +1,6 @@
+/** 
+ * @date 2018/5/24
+ */
 #ifndef NWH_HTS_SURFACE_LIT_BASE_INC
 #define NWH_HTS_SURFACE_LIT_BASE_INC
 
@@ -23,7 +26,7 @@ sampler2D	_EmissionMap;
 
 
 /* kernels */
-	/** サーフェイスシェーダー.
+	/** Surface shader.
 	 *
 	 */
 	void surfLitBase( Input IN, inout SurfaceOutputStandardSpecular o ) {
