@@ -6,7 +6,8 @@
 		_Color2		("Color 2", Color ) = (0,0,1,1)
 
 		// REQUIRED : Lit variables
-		_ToonTex( "Ramp Texture", 2D ) = "white"{}
+		_ToonTex("Directional Ramp", 2D) = "white"{}
+		_ToonPointLightTex("Point Ramp", 2D)="white"{}
 		_ToonFactor( "Ramp Factor", Range( 0,1 ) ) = 1
 	}
 	SubShader {
@@ -18,6 +19,10 @@
 			#pragma surface surf ToonRamp fullforwardshadows addshadow
 			#pragma target 3.0
 			#include <Assets/Nowhere/HoshiyukiToon/Shaders/HoshiyukiToonLighting.cginc>
+
+
+			// OPTIONAL : if this keyword is defined, the ramp texture of point light is enabled.
+			#define HTS_USE_POINTLIGHTRAMP
 
 
 			struct Input {
