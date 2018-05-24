@@ -111,7 +111,7 @@ namespace NowhereUnityEditor.Rendering{
                     
                     EditorGUI.BeginChangeCheck();
                     {
-                        EditorGUILayout.HelpBox(s_styles.tipsText, MessageType.Info);
+                        //EditorGUILayout.HelpBox(s_styles.tipsText, MessageType.Info);
 
                         // Menus
                         DoRenderingSettingsArea(mtl);
