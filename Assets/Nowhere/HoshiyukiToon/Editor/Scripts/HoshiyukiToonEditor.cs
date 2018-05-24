@@ -112,30 +112,65 @@ namespace NowhereUnityEditor.Rendering{
                     EditorGUI.BeginChangeCheck();
                     {
                         EditorGUILayout.HelpBox(s_styles.tipsText, MessageType.Info);
-                        BlendModeProp();
 
-                        // Base Color Area
-                        GUILayout.Label(s_styles.primaryMapsText, EditorStyles.boldLabel);
-                        DoAlbedoArea(mtl);
-                        DoRampArea(mtl);
-                        m_materialEditor.TexturePropertySingleLine(s_styles.occlusionText, occlusionMap, (occlusionMap.textureValue!=null) ? occlusionFactor : null);
-                        DoEmissionArea(mtl);
-                        m_materialEditor.TextureScaleOffsetProperty(albedoMap);
-
-                        // Outline Area
+                        // Menus
+                        DoRenderingSettingsArea(mtl);
+                        DoBaseMapArea(mtl);
                         DoLineArea(mtl);
-
-                        // Options Area
-                        EditorGUILayout.Space();
-                        GUILayout.Label(s_styles.advancedOptionsText, EditorStyles.boldLabel);
-                        m_materialEditor.ShaderProperty(cullMode, s_styles.cullModeText);
-                        m_materialEditor.ShaderProperty(useStandardGI, s_styles.standardGIText);
+                        DoOptionsArea(mtl);
                     }
                     if( EditorGUI.EndChangeCheck() )
                     {
                         foreach(var it in albedoColor.targets)
                             MaterialChanged((Material)it);
                     }
+                }
+
+
+                void DoRenderingSettingsArea(Material mtl){
+                    BlendModeProp();
+                    m_materialEditor.ShaderProperty(cullMode, s_styles.cullModeText);
+                }
+
+                void DoBaseMapArea(Material mtl) {
+                    GUILayout.Label(s_styles.primaryMapsText, EditorStyles.boldLabel);
+                    DoAlbedoArea(mtl);
+                    DoRampArea(mtl);
+                    m_materialEditor.TexturePropertySingleLine(s_styles.occlusionText, occlusionMap, (occlusionMap.textureValue!=null) ? occlusionFactor : null);
+                    DoEmissionArea(mtl);
+                    m_materialEditor.TextureScaleOffsetProperty(albedoMap);
+                }
+
+                void DoRampArea(Material mtl) {
+            
+                    m_materialEditor.ShaderProperty(rampFactor, s_styles.rampText);
+                    EditorGUI.indentLevel++;
+                    {
+                        m_materialEditor.TexturePropertySingleLine(new GUIContent("Directional Light"), rampMap);
+                        m_materialEditor.TexturePropertySingleLine(new GUIContent("Point Light"), rampPointMap);
+                    }
+                    EditorGUI.indentLevel--;
+                }
+
+                void DoLineArea(Material mtl) {
+                    if( (m_editFlag&EditFlag.Line)!=0 )
+                    {
+                        EditorGUILayout.Space();
+                        GUILayout.Label(s_styles.lineSettingsText, EditorStyles.boldLabel);
+
+                        m_materialEditor.ShaderProperty(lineColor, s_styles.lineColorText);
+                        m_materialEditor.ShaderProperty(lineSize, s_styles.lineSizeText);
+                        if( lineCull!=null )
+                        {
+                            m_materialEditor.ShaderProperty(lineCull, s_styles.cullModeText);
+                        }
+                    }
+                }
+
+                void DoOptionsArea(Material mtl) {
+                    EditorGUILayout.Space();
+                    GUILayout.Label(s_styles.advancedOptionsText, EditorStyles.boldLabel);
+                    m_materialEditor.ShaderProperty(useStandardGI, s_styles.standardGIText);
                 }
 
 
@@ -170,17 +205,6 @@ namespace NowhereUnityEditor.Rendering{
                     }
                 }
 
-                void DoRampArea(Material mtl) {
-
-                    m_materialEditor.ShaderProperty(rampFactor, s_styles.rampText);
-                    EditorGUI.indentLevel++;
-                    {
-                        m_materialEditor.TexturePropertySingleLine(new GUIContent("Directional Light"), rampMap);
-                        m_materialEditor.TexturePropertySingleLine(new GUIContent("Point Light"), rampPointMap);
-                    }
-                    EditorGUI.indentLevel--;
-                }
-
                 void DoEmissionArea(Material mtl) {
 
                     bool showHelp       = !HasValidEmissiveKeyword(mtl);
@@ -197,21 +221,6 @@ namespace NowhereUnityEditor.Rendering{
 
                     // Emission for GI ?
                     m_materialEditor.LightmapEmissionProperty(MaterialEditor.kMiniTextureFieldLabelIndentLevel + 1);
-                }
-
-                void DoLineArea(Material mtl) {
-                    if( (m_editFlag&EditFlag.Line)!=0 )
-                    {
-                        EditorGUILayout.Space();
-                        GUILayout.Label(s_styles.lineSettingsText, EditorStyles.boldLabel);
-
-                        m_materialEditor.ShaderProperty(lineColor, s_styles.lineColorText);
-                        m_materialEditor.ShaderProperty(lineSize, s_styles.lineSizeText);
-                        if( lineCull!=null )
-                        {
-                            m_materialEditor.ShaderProperty(lineCull, s_styles.cullModeText);
-                        }
-                    }
                 }
             #endregion
 
