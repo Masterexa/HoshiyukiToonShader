@@ -26,6 +26,10 @@ Material:
         m_Texture: {fileID: 2800000, guid: 271a6f791a901714093d4bc1235dadf8, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _ClipMaskTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _DecalTex:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -64,14 +68,18 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Floats:
     - _Blend: 0
+    - _ClipMaskThreshold: 0.5
     - _Cull: 2
     - _Cutoff: 0.1
     - _Depth: 0.2
+    - _Freq: 1
     - _Gross: 0
     - _OcclusionStrength: 0
+    - _OutlineCull: 1
     - _OutlineDepth: 0.1
     - _OutlineSize: 0.002
     - _OutlineWidth: 0.11
+    - _Scale: 0
     - _SpColor: 0
     - _ToonFactor: 1
     - _UseStandardGI: 0

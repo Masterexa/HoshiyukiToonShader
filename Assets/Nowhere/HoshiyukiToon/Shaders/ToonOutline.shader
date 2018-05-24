@@ -19,7 +19,7 @@ Shader "HoshiyukiToon/Outline"
 			Name "OUTLINE"
 			Tags{"LightMode" = "Always" "Queue"="Transparent"}
 			Cull Front
-			ZWrite On
+			ZWrite Off
 			ColorMask RGB
 			Blend SrcAlpha OneMinusSrcAlpha
 
@@ -29,8 +29,11 @@ Shader "HoshiyukiToon/Outline"
 				#pragma fragment frag
 				//#pragma multi_compile_fwdbase
 				#pragma multi_compile_fog	// make fog work
-				#include "HoshiyukiToonCommon.cginc"
 
+				//#define HTS_FRONTSIDE_OUTLINE
+
+				#include "HoshiyukiToonCommon.cginc"
+				#include "HoshiyukiToonOutline.cginc"
 
 				/* --- Uniforms --- */
 					uniform float	_OutlineSize;
@@ -51,10 +54,11 @@ Shader "HoshiyukiToon/Outline"
 					 */
 					struct v2f
 					{
-						UNITY_FOG_COORDS(1)
+						UNITY_FOG_COORDS(2)
 						float4	vertex		: SV_POSITION;
-						half4	color		: COLOR;
-						float4	worldPos	: TEXCOORD0;
+						fixed4	color		: COLOR;
+						half3	ambient		: TEXCOORD0;
+						float3	worldPos	: TEXCOORD1;
 					};
 				/* end */
 
@@ -64,34 +68,12 @@ Shader "HoshiyukiToon/Outline"
 					 */
 					v2f vert (appdata v)
 					{
-						float edge = _OutlineSize;
+						// Vertex calculation
 						v2f o;
-						o.vertex = UnityObjectToClipPos(v.vertex);
-
-						float3	norm		= normalize( mul( (float3x3)UNITY_MATRIX_IT_MV, float4(v.normal,0) ) );
-						float2	offset		= TransformViewToProjection( norm.xy );
-						float	fov			= atan( 1 / unity_CameraProjection._m11 ) * 2;
-
-						// Outline translation
-						//#ifdef UNITY_Z_0_FAR_FROM_CLIPSPACE
-							o.vertex.xy += offset * fov * UNITY_Z_0_FAR_FROM_CLIPSPACE( o.vertex.z ) * edge;
-						//#else
-							//o.vertex.xy += offset * edge * fov * (o.vertex.z);
-						//#endif
-
-
-						// GI Calclation
+						o.vertex	= v.vertex;
 						o.color		= _OutlineColor;
-						#ifdef UNITY_LIGHT_PROBE_PROXY_VOLUME
-							// Sample Light probe GI
-							if (unity_ProbeVolumeParams.x != 1)
-							{
-								o.color.rgb *= ShadeSHSimpleToon();
-							}
-							o.worldPos = mul( unity_ObjectToWorld, v.vertex );
-						#else
-							o.color.rgb *= ShadeSHSimpleToon();
-						#endif
+						HTS_vertexOutlineOperation(_OutlineSize, /*is front face culling*/0, v.normal, /*inout*/o.vertex, /*out*/o.ambient, /*out*/o.worldPos);
+
 
 						UNITY_TRANSFER_FOG(o,o.vertex);
 						return o;
@@ -102,19 +84,11 @@ Shader "HoshiyukiToon/Outline"
 					 */
 					fixed4 frag (v2f i) : SV_Target
 					{
-						// sample the texture
-						half4 col = i.color;
+						// Apply color and GI
+						half4 col;
+						HTS_fragmentOutlineOperation(i.color, i.worldPos, i.ambient, /*out*/col);
 
-						// Sample Proxy Volume GI
-						#if defined(UNITY_LIGHT_PROBE_PROXY_VOLUME)
-							if (unity_ProbeVolumeParams.x == 1)
-							{
-								col.rgb *= SHEvalLinearL0L1_SampleProbeVolume_Toon( i.worldPos );
-							}
-						#endif
-
-
-						// apply fog
+						// Apply fog
 						UNITY_APPLY_FOG(i.fogCoord, col);
 						return col;
 					}
