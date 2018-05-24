@@ -75,6 +75,7 @@ fixed4		_Color;
 		half4 col;
 		HTS_fragmentOutlineOperation(i.color, i.worldPos, i.ambient, /*out*/col);
 
+
 		// Apply fog
 		UNITY_APPLY_FOG(i.fogCoord, col);
 		return col;

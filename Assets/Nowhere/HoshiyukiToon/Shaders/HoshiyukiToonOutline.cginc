@@ -23,7 +23,7 @@ inline half3 HTS_calculateVertexOutlineGI() {
 inline half3 HTS_calculatePixelOutlineGI(half3 ambient,float3 worldPos) {
 
 	// Sample Proxy Volume GI
-	#if defined(UNITY_LIGHT_PROBE_PROXY_VOLUME)
+	#if UNITY_LIGHT_PROBE_PROXY_VOLUME
 		if( unity_ProbeVolumeParams.x == 1 )
 		{
 			return SHEvalLinearL0L1_SampleProbeVolume_Toon(worldPos);
@@ -49,8 +49,13 @@ inline void HTS_vertexOutlineOperation(float size, float isBackCull, float3 N, i
 
 inline void HTS_fragmentOutlineOperation(fixed4 albedo, float3 worldPos, half3 ambient, out half4 outColor)
 {
+	ambient		= HTS_calculatePixelOutlineGI(ambient, worldPos);
+	#if UNITY_COLORSPACE_GAMMA
+		ambient = LinearToGammaSpace(ambient);
+	#endif
+
 	outColor		= albedo;
-	outColor.rgb	*= HTS_calculatePixelOutlineGI(ambient, worldPos);
+	outColor.rgb	*= ambient;
 }
 
 #endif

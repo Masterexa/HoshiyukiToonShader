@@ -39,7 +39,7 @@ Shader "HoshiyukiToon/LitFadeOutline"
 		Pass
 		{
 			Name "OUTLINE"
-			Tags{"LightMode" = "Always" "Queue"="Transparent+10"}
+			Tags{"LightMode" = "ForwardBase" "Queue"="Transparent+10"}
 			Cull [_OutlineCull]
 			ZWrite Off
 			ColorMask RGB
