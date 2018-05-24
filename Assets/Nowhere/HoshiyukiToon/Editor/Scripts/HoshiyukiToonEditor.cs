@@ -6,13 +6,13 @@ using UnityEngine;
 using UnityEditor;
 
 
-namespace NowhereUnityEditor.Rendering{
+namespace HoshiyukiToonShaderEditor{
 
 	///<summary>シェーダーのカスタムエディタ</summary>
 	///<remarks>
 	///
 	///</remarks>
-	public class HoshiyukiToonEditor : ShaderGUI{
+	public class SurfaceShaderInspector : ShaderGUI{
 
         #region Typedefs
             enum BlendMode {
@@ -126,7 +126,6 @@ namespace NowhereUnityEditor.Rendering{
                     }
                 }
 
-
                 void DoRenderingSettingsArea(Material mtl){
                     BlendModeProp();
                     m_materialEditor.ShaderProperty(cullMode, s_styles.cullModeText);
@@ -172,7 +171,6 @@ namespace NowhereUnityEditor.Rendering{
                     GUILayout.Label(s_styles.advancedOptionsText, EditorStyles.boldLabel);
                     m_materialEditor.ShaderProperty(useStandardGI, s_styles.standardGIText);
                 }
-
 
                 void BlendModeProp() {
                     if( (m_editFlag&EditFlag.ModeEditable)==0 )

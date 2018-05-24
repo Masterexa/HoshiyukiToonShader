@@ -67,5 +67,5 @@ Shader "HoshiyukiToon/LitFadeOutline"
 		}
 	}
 	Fallback "Diffuse"
-	CustomEditor "NowhereUnityEditor.Rendering.HoshiyukiToonEditor"
+	CustomEditor "HoshiyukiToonShaderEditor.SurfaceShaderInspector"
 }
