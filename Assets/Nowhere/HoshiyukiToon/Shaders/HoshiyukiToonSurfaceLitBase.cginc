@@ -25,7 +25,7 @@ sampler2D	_EmissionMap;
 
 
 
-/* kernels */
+/* Shader kernels */
 	/** Surface shader.
 	 *
 	 */

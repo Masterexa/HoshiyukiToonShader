@@ -17,7 +17,7 @@ Shader "HoshiyukiToon/Outline"
 		Pass
 		{
 			Name "OUTLINE"
-			Tags{"LightMode" = "Always" "Queue"="Transparent"}
+			Tags{"LightMode" = "ForwardBase" "Queue"="Transparent+100"}
 			Cull Front
 			ZWrite Off
 			ColorMask RGB
@@ -27,7 +27,6 @@ Shader "HoshiyukiToon/Outline"
 				#pragma target 3.0
 				#pragma vertex vert
 				#pragma fragment frag
-				//#pragma multi_compile_fwdbase
 				#pragma multi_compile_fog	// make fog work
 
 				//#define HTS_FRONTSIDE_OUTLINE
