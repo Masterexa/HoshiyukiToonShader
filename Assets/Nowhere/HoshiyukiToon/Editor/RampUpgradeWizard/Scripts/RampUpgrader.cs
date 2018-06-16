@@ -17,7 +17,7 @@ namespace HoshiyukiToonShaderEditor.RampUpgradeWizard {
         Asynchronously      = 0x4
     }
 
-    public struct RampUpgraderMaterialPair{
+    public struct ScheduledMaterial{
         public bool     isScheduled;
         public string   path;
         public Material material;
@@ -27,6 +27,14 @@ namespace HoshiyukiToonShaderEditor.RampUpgradeWizard {
 
 
         #region Methods
+            public static void UpgradeMaterials(ScheduledMaterial[] scheduledMaterials, RampUpgradeOptions options=RampUpgradeOptions.CopyFromDirectional, Texture2D pointRampTexture=null)
+            {
+                var materials = scheduledMaterials.Where( (it)=>it.isScheduled ).ToArray();
+
+                UpgradeMaterials(materials, options, pointRampTexture);
+            }
+
+
             public static void UpgradeMaterials(Material[] materials, RampUpgradeOptions type=RampUpgradeOptions.CopyFromDirectional, Texture2D pointRampTexture=null) {
                 // IDs
                 var     directionalTexId    = Shader.PropertyToID("_ToonTex");
@@ -61,7 +69,7 @@ namespace HoshiyukiToonShaderEditor.RampUpgradeWizard {
                 
             }
 
-            public static void FindUnupdatedMaterials(out RampUpgraderMaterialPair[] pairs) {
+            public static void FindUnupdatedMaterials(out ScheduledMaterial[] pairs) {
 
                 var myShaders = new []{
                     Shader.Find("HoshiyukiToon/Lit"),
@@ -76,7 +84,7 @@ namespace HoshiyukiToonShaderEditor.RampUpgradeWizard {
                     AssetDatabase.FindAssets("t:Material")
                     .Select( (it)=>AssetDatabase.GUIDToAssetPath(it) )
                     // Build structures for setup
-                    .Select( (it)=>new RampUpgraderMaterialPair {
+                    .Select( (it)=>new ScheduledMaterial {
                         path        = it,
                         material    = AssetDatabase.LoadAssetAtPath<Material>(it),
                         isScheduled = true

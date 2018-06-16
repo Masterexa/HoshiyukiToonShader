@@ -17,7 +17,7 @@ namespace HoshiyukiToonShaderEditor.RampUpgradeWizard{
     class FileTreeBuilder {
 
         #region Fields
-            RampUpgraderMaterialPair[] materials { get; set; }
+            ScheduledMaterial[] materials { get; set; }
 
             Dictionary<string,TreeViewItem> m_directries = new Dictionary<string, TreeViewItem>();
             int m_counter=0;
@@ -27,7 +27,7 @@ namespace HoshiyukiToonShaderEditor.RampUpgradeWizard{
             public FileTreeBuilder() {
             }
         
-            public void BuildTree(TreeViewItem root, RampUpgraderMaterialPair[] pathes) {
+            public void BuildTree(TreeViewItem root, ScheduledMaterial[] pathes) {
 
                 this.materials = pathes;
 
@@ -101,7 +101,10 @@ namespace HoshiyukiToonShaderEditor.RampUpgradeWizard{
 
         #region Instance
             #region Fields
-                RampUpgraderMaterialPair[] m_materialPairs;
+                ScheduledMaterial[] m_materialPairs;
+                public ScheduledMaterial[] allMaterials{
+                    get { return m_materialPairs; }
+                }
 
                 public int materialCount {
                     get { return m_materialPairs.Length; }
@@ -110,6 +113,7 @@ namespace HoshiyukiToonShaderEditor.RampUpgradeWizard{
                 public int scheduledMaterialCount {
                     get { return m_materialPairs.Count( (it)=>it.isScheduled ); }
                 }
+
             #endregion
 
             #region GUI Methods
@@ -233,7 +237,7 @@ namespace HoshiyukiToonShaderEditor.RampUpgradeWizard{
                     return root;
                 }
 
-                public void Reload(RampUpgraderMaterialPair[] pathes) {
+                public void Reload(ScheduledMaterial[] pathes) {
                     m_materialPairs = pathes;
                     Reload();
                 }
@@ -318,25 +322,24 @@ namespace HoshiyukiToonShaderEditor.RampUpgradeWizard{
             main.ShowUtility();
         }
 
+        
+        class Page {
+            public System.Action action { get; set; }
 
-        #region Typedefs
-            class Page {
-                public System.Action action { get; set; }
-
-                public Page(System.Action action)
-                {
-                    this.action = action;
-                }
+            public Page(System.Action action)
+            {
+                this.action = action;
             }
+        }
 
-            enum PageNum {
-                None = -1,
-                MaterialListPage,
-                OperationChoosenPage,
-                DonePage,
-                Finished
-            }
-        #endregion
+        enum PageNum {
+            None = -1,
+            MaterialListPage,
+            OperationChoosenPage,
+            ProcessingPage,
+            DonePage,
+            Finished
+        }
 
 
         #region GUI Resources
@@ -392,11 +395,13 @@ namespace HoshiyukiToonShaderEditor.RampUpgradeWizard{
                         );
                     }
                 }
+
+                bool m_confirmContinuation = false;
             #endregion
 
             #region Options
-                Texture2D           m_pointRampTex;
-                RampUpgradeOptions  m_upgradeOptions    = RampUpgradeOptions.Asynchronously;
+                Texture2D   m_pointRampTex;
+                bool        m_isCopyFromDirection   = true;
             #endregion
 
             #region Events
@@ -406,6 +411,11 @@ namespace HoshiyukiToonShaderEditor.RampUpgradeWizard{
                 void OnEnable() {
                     // Apply Title
                     this.titleContent   = s_titleContent;
+                    {
+                        var sz          = this.position;
+                        sz.size         = new Vector2(600f,400f);
+                        this.position   = sz;
+                    }
 
                     // Init TreeView
                     if( m_treeViewState==null )
@@ -421,6 +431,7 @@ namespace HoshiyukiToonShaderEditor.RampUpgradeWizard{
                     // Register pages
 					m_pages.Add(PageNum.MaterialListPage, new Page(DoMaterialListPage));
                     m_pages.Add(PageNum.OperationChoosenPage, new Page(DoOperationChoosenPage));
+                    m_pages.Add(PageNum.ProcessingPage, new Page(DoProcessingPage));
                     m_pages.Add(PageNum.DonePage, new Page(DoDonePage));
 
                     RefreshMaterialList();
@@ -458,7 +469,11 @@ namespace HoshiyukiToonShaderEditor.RampUpgradeWizard{
                         // Cancel button
                         if( GUILayout.Button("Cancel", GUILayout.ExpandWidth(false)) )
                         {
-                            DisplayCancelDialog();
+                            if( DisplayDialog("Do you want to abort the setup?") )
+                            {
+                                SetNextPage(PageNum.DonePage);
+                                NextPage();
+                            }
                         }
                             
                         // Next & Finish button
@@ -468,6 +483,15 @@ namespace HoshiyukiToonShaderEditor.RampUpgradeWizard{
 
                             if( GUILayout.Button(label, GUILayout.ExpandWidth(false)) )
                             {
+                                if( m_confirmContinuation && DisplayDialog("You can not UNDO the operation.\nAre you sure you want to proceed ? ") )
+                                {
+                                    NextPage();
+                                    m_confirmContinuation = false;
+                                }
+                                else if( !m_confirmContinuation )
+                                {
+                                    NextPage();
+                                }
                                 NextPage();
                             }
                         }
@@ -504,37 +528,41 @@ namespace HoshiyukiToonShaderEditor.RampUpgradeWizard{
 
                 void DoOperationChoosenPage() {
                     
-                    bool isCopyFromDir  = !((m_upgradeOptions & RampUpgradeOptions.CopyFromDirectional)==0);
-
                     // Draw header
                     DoHeaderLabel(new GUIContent("Options"));
 
                     // Draw options
                     EditorGUILayout.Space();
-                    isCopyFromDir       = GUILayout.Toggle(isCopyFromDir, "Copy from Directional", EditorStyles.radioButton);
-                    isCopyFromDir       = !GUILayout.Toggle(!isCopyFromDir, "Apply Single Texture", EditorStyles.radioButton);
+                    m_isCopyFromDirection       = GUILayout.Toggle(m_isCopyFromDirection, "Copy from Directional", EditorStyles.radioButton);
+                    m_isCopyFromDirection       = !GUILayout.Toggle(!m_isCopyFromDirection, "Apply Single Texture", EditorStyles.radioButton);
 
                     // Draw texture setting
                     EditorGUI.indentLevel++;
-                    EditorGUI.BeginDisabledGroup(isCopyFromDir);
+                    EditorGUI.BeginDisabledGroup(m_isCopyFromDirection);
                     using(var box = new GUILayout.VerticalScope(EditorStyles.helpBox))
                     {
                         m_pointRampTex = (Texture2D)EditorGUILayout.ObjectField("Point Light Ramp", m_pointRampTex, typeof(Texture2D), false);
                     }
                     EditorGUI.EndDisabledGroup();
                     EditorGUI.indentLevel--;
-
-                    // Apply options
-                    m_upgradeOptions    = RampUpgradeOptions.Asynchronously | (isCopyFromDir ? RampUpgradeOptions.CopyFromDirectional : RampUpgradeOptions.ApplySingleTexture);
+                    
 
                     // Set page
                     SetPrevPage(PageNum.MaterialListPage);
                     SetNextPage(PageNum.DonePage);
                 }
 
+                void DoProcessingPage() {
+                    
+                    var options = RampUpgradeOptions.Asynchronously
+                                    | (m_isCopyFromDirection ? RampUpgradeOptions.CopyFromDirectional : RampUpgradeOptions.ApplySingleTexture)
+                    ;
+
+                    RampUpgrader.UpgradeMaterials(m_treeView.allMaterials, options, m_pointRampTex);
+                }
+
                 void DoDonePage() {
                     DoHeaderLabel(new GUIContent("Finished"));
-                    GUILayout.Label("てふてふ");
 
                     SetPrevPage(PageNum.None);
                     SetNextPage(PageNum.Finished);
@@ -571,19 +599,15 @@ namespace HoshiyukiToonShaderEditor.RampUpgradeWizard{
                     m_currentPage = m_prevPage;
                 }
 
-                void DisplayCancelDialog() {
-                    if( EditorUtility.DisplayDialog("確認", "セットアップをキャンセルしますか?", "はい", "いいえ") )
-                    {
-                        SetNextPage(PageNum.DonePage);
-                        NextPage();
-                    }
-                        
+                bool DisplayDialog(string message)
+                {
+                    return EditorUtility.DisplayDialog("Infomation", message, "OK");
                 }
 
                 void RefreshMaterialList() {
                     EditorUtility.DisplayProgressBar("Info", "Searching Materials", 1f);
                     {
-                        RampUpgraderMaterialPair[] pairs;
+                        ScheduledMaterial[] pairs;
                         RampUpgrader.FindUnupdatedMaterials(out pairs);
                         m_treeView.Reload( pairs );
                         m_treeView.ExpandAll();
