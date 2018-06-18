@@ -10,6 +10,8 @@ using UnityObject = UnityEngine.Object;
 
 namespace HoshiyukiToonShaderEditor.RampUpgradeWizard{
 
+#region Tree View Classes
+
     /// <summary>
     /// \~english   Class for building a file tree.
     /// \~japanese  ファイルツリーの組み立てを行うクラス.
@@ -30,7 +32,6 @@ namespace HoshiyukiToonShaderEditor.RampUpgradeWizard{
             public void BuildTree(TreeViewItem root, ScheduledMaterial[] pathes) {
 
                 this.materials = pathes;
-
                 for(int i = 0; i<pathes.Length; i++)
                 {
                     var it = pathes[i];
@@ -39,10 +40,11 @@ namespace HoshiyukiToonShaderEditor.RampUpgradeWizard{
                 }
                 m_counter=0;
                 m_directries.Clear();
+                
             }
         #endregion
 
-        #region Internals
+        #region Tree Methods
             void AddParent(string path, TreeViewItem child, TreeViewItem root) {
 
                 string  dir     = Path.GetDirectoryName(path);
@@ -82,7 +84,7 @@ namespace HoshiyukiToonShaderEditor.RampUpgradeWizard{
 
 
     /// <summary>
-    /// Tree view for material list in upgrader wizard.
+    /// \~english   Tree view for material list in upgrader wizard.
     /// </summary>
     class MaterialTreeView : TreeView {
         
@@ -92,6 +94,9 @@ namespace HoshiyukiToonShaderEditor.RampUpgradeWizard{
             static GUIStyle     s_toggleMixed;
         #endregion
 
+        /// <summary>
+        /// \~english   Initialization of the class
+        /// </summary>
         static MaterialTreeView() {
             s_FolderIcon    = EditorGUIUtility.FindTexture("Folder Icon");
             s_MaterialIcon  = EditorGUIUtility.FindTexture("Material Icon");
@@ -113,10 +118,30 @@ namespace HoshiyukiToonShaderEditor.RampUpgradeWizard{
                 public int scheduledMaterialCount {
                     get { return m_materialPairs.Count( (it)=>it.isScheduled ); }
                 }
-
             #endregion
 
-            #region GUI Methods
+            #region Initialization Methods
+                public MaterialTreeView(TreeViewState state) : base(state) {
+                    showAlternatingRowBackgrounds = true;
+                    this.showBorder = true;
+                }
+
+                protected override TreeViewItem BuildRoot() {
+                    var root    = new TreeViewItem(-1, -1, "");
+                    var buider  = new FileTreeBuilder();
+
+                    buider.BuildTree(root, m_materialPairs);
+                    SetupDepthsFromParentsAndChildren(root);
+                    return root;
+                }
+
+                public void Reload(ScheduledMaterial[] pathes) {
+                    m_materialPairs = pathes;
+                    Reload();
+                }
+            #endregion
+
+            #region GUI Events
                 protected override void SelectionChanged(IList<int> selectedIds) {
 
                     base.SelectionChanged(selectedIds);
@@ -157,7 +182,9 @@ namespace HoshiyukiToonShaderEditor.RampUpgradeWizard{
                     GUI.DrawTexture(iconRc, iconTex);
                     base.RowGUI(args);
                 }
+            #endregion
 
+            #region GUI Methods
                 void DoToggle(Rect rect, TreeViewItem item) {
 
                     var ret     = CheckScheduleRecursive(item);
@@ -221,28 +248,6 @@ namespace HoshiyukiToonShaderEditor.RampUpgradeWizard{
             #endregion
 
             #region Tree Methods
-                public MaterialTreeView(TreeViewState state) : base(state)
-                {
-                    showAlternatingRowBackgrounds = true;
-                    this.showBorder = true;
-                }
-
-                protected override TreeViewItem BuildRoot()
-                {
-                    var root    = new TreeViewItem(-1, -1, "");
-                    var buider  = new FileTreeBuilder();
-
-                    buider.BuildTree(root, m_materialPairs);
-                    SetupDepthsFromParentsAndChildren(root);
-                    return root;
-                }
-
-                public void Reload(ScheduledMaterial[] pathes) {
-                    m_materialPairs = pathes;
-                    Reload();
-                }
-
-
                 string GetParentPath(TreeViewItem item) {
 
                     var path = GetParentPathRecursive(item);
@@ -304,16 +309,20 @@ namespace HoshiyukiToonShaderEditor.RampUpgradeWizard{
         #endregion
     }
 
+    #endregion
 
-	///<summary>RUWWindow</summary>
-	///<remarks>
-	///A Editor Window class.
-	///</remarks>
-	public class RampUpgradeWizard : EditorWindow{
+
+    /// <summary>
+    /// \~english    Upgrade wizard window
+    /// </summary>
+    class RampUpgradeWizard : EditorWindow{
 
         static RampUpgradeWizard main { get; set; }
 
-        [MenuItem("HoshiyukiToon/Upgrade Ramp")]
+        /// <summary>
+        /// \~english   Create the window
+        /// </summary>
+        [MenuItem("HoshiyukiToon/Upgrade Point Ramp")]
         static void Init(){
             if( main==null )
             {
@@ -322,23 +331,87 @@ namespace HoshiyukiToonShaderEditor.RampUpgradeWizard{
             main.ShowUtility();
         }
 
-        
+        /// <summary>
+        /// \~english   Page of the setup wizard
+        /// </summary>
         class Page {
-            public System.Action action { get; set; }
+            public delegate void GUIDelegate(Page page);
+            
+            #region Fields
+                // Configations
+                public string       title           { get; set; }
+                public string       previousPage    { get; set; }
+                public string       nextPage        { get; set; }
+                public bool         confirmNext     { get; set; }
+                public bool         canncelable     { get; set; }
+                public GUIDelegate  onGUI           { get; set; }
 
-            public Page(System.Action action)
-            {
-                this.action = action;
-            }
-        }
+                public bool isEndOfWizard {
+                    get { return string.IsNullOrEmpty(nextPage); }
+                }
+            #endregion
 
-        enum PageNum {
-            None = -1,
-            MaterialListPage,
-            OperationChoosenPage,
-            ProcessingPage,
-            DonePage,
-            Finished
+            public Page() {
+                    canncelable = true;
+                }
+
+            #region Events
+                public void DrawGUI(RampUpgradeWizard wizard)
+                {
+                    wizard.DoHeaderLabel(new GUIContent(title));
+                    EditorGUILayout.Space();
+                    onGUI.Invoke(this);
+                }
+
+                public void DrawFooter(RampUpgradeWizard wizard)
+                {
+                    using(var footer = new GUILayout.AreaScope(new Rect(10f,wizard.position.height-30f, wizard.position.width-20f,30f),"")){
+                    using(var bottom = new EditorGUILayout.HorizontalScope())
+                    {
+                        // Back button
+                        using(var dis = new EditorGUI.DisabledScope(string.IsNullOrEmpty(this.previousPage)))
+                        {
+                            if( GUILayout.Button("Back", GUILayout.ExpandWidth(false)) )
+                            {
+                                wizard.GoPreviousPage();
+                            }
+                        }
+                            
+                        // Space between Back and Cancel
+                        GUILayout.FlexibleSpace();
+
+
+                        // Cancel button
+                        if( this.canncelable )
+                        {
+                            if(GUILayout.Button("Cancel", GUILayout.ExpandWidth(false)))
+                            {
+                                if(wizard.DisplayDialog("Do you want to abort the setup?"))
+                                {
+                                    wizard.GoCanncelPage();
+                                }
+                            }
+                        }
+
+                        // Next & Finish button
+                        {
+                            var label = this.isEndOfWizard ? "Finish" : "Next";
+
+                            if( GUILayout.Button(label, GUILayout.ExpandWidth(false)) )
+                            {
+                                if( this.confirmNext && wizard.DisplayDialog("You can not UNDO the operation.\nAre you sure you want to proceed?") )
+                                {
+                                    wizard.GoNextPage();
+                                }
+                                else if( !this.confirmNext )
+                                {
+                                    wizard.GoNextPage();
+                                }
+                            }
+                        }
+                    }}// End of footer area
+                }
+            #endregion
         }
 
 
@@ -349,10 +422,24 @@ namespace HoshiyukiToonShaderEditor.RampUpgradeWizard{
             static GUIContent   s_titleContent;
         #endregion
 
+        #region Page Names
+            /*
+             *  Those constants are use for identify the page.
+             */
+            static readonly string  SelectMaterialsPage     = "Start";
+            static readonly string  OptionsPage             = "Options";
+            static readonly string  ProcessingPage          = "Processing";
+            static readonly string  FinishPage              = "Finish";
+            static readonly string  CanncelPage             = "Canncelled";
+            static readonly string  ExitSentinelPage        = "EXIT";
+        #endregion
 
+        /// <summary>
+        /// \~english   Initialization of the class
+        /// </summary>
         static RampUpgradeWizard() {
             s_refreshButtonContent      = new GUIContent("Refresh", EditorGUIUtility.FindTexture("RotateTool"), "");
-            s_titleContent              = new GUIContent("Upgrade Ramp Texture");
+            s_titleContent              = new GUIContent("Upgrade Point Ramp");
 
             s_headerLabelStyle          = new GUIStyle(EditorStyles.largeLabel);
             s_headerLabelStyle.font     = EditorStyles.boldFont;
@@ -366,25 +453,18 @@ namespace HoshiyukiToonShaderEditor.RampUpgradeWizard{
 
 
         #region Instance
-            #region UI States
-                Dictionary<PageNum,Page> m_pages = new Dictionary<PageNum, Page>();
-
-                // Page States
-                PageNum m_currentPage   = PageNum.MaterialListPage;
-                PageNum m_nextPage      = PageNum.Finished;
-                PageNum m_prevPage      = PageNum.None;
+            #region UI&Page Fields
+                // Page Statements
+                Dictionary<string,Page>    m_pages = new Dictionary<string, Page>();
+                Page    m_currentPage;
+                string  m_pageQuery;
 
                 // UI Elements
                 MaterialTreeView    m_treeView;
                 TreeViewState       m_treeViewState;
                 SearchField         m_searchField;
                 
-                Rect materialListRect {
-                    get {
-                        return new Rect(10f, 0f, position.width-20f, 300f);
-                    }
-                }
-
+                // Layout 
                 Rect pageRect {
                     get {
                         return new Rect(
@@ -395,18 +475,17 @@ namespace HoshiyukiToonShaderEditor.RampUpgradeWizard{
                         );
                     }
                 }
-
-                bool m_confirmContinuation = false;
             #endregion
 
-            #region Options
-                Texture2D   m_pointRampTex;
+            #region Upgrade Configation Fields
+                bool        m_setupIsNotNeeded      = false; 
+                Texture2D   m_pointRampTex          = null;
                 bool        m_isCopyFromDirection   = true;
             #endregion
 
-            #region Events
+            #region EditorWindow Events
                 ///<summary>
-                ///Use this for initialization.
+                ///\~english   Use this for initialization.
                 ///</summary>
                 void OnEnable() {
                     // Apply Title
@@ -417,6 +496,7 @@ namespace HoshiyukiToonShaderEditor.RampUpgradeWizard{
                         this.position   = sz;
                     }
 
+
                     // Init TreeView
                     if( m_treeViewState==null )
                     {
@@ -424,85 +504,62 @@ namespace HoshiyukiToonShaderEditor.RampUpgradeWizard{
                     }
                     m_treeView = new MaterialTreeView(m_treeViewState);
 
-                    // Init SearchField
+
+                    // Initialize SearchField
                     m_searchField = new SearchField();
                     m_searchField.downOrUpArrowKeyPressed += m_treeView.SetFocusAndEnsureSelectedItem;
 
-                    // Register pages
-					m_pages.Add(PageNum.MaterialListPage, new Page(DoMaterialListPage));
-                    m_pages.Add(PageNum.OperationChoosenPage, new Page(DoOperationChoosenPage));
-                    m_pages.Add(PageNum.ProcessingPage, new Page(DoProcessingPage));
-                    m_pages.Add(PageNum.DonePage, new Page(DoDonePage));
 
+                    // Register pages
+					m_pages.Add(SelectMaterialsPage,    new Page {title="Select Materials",    onGUI=OnMaterialListPage,   nextPage=OptionsPage});
+                    m_pages.Add(OptionsPage,            new Page {title="Options",             onGUI=OnOptionPage,         nextPage=ProcessingPage, previousPage=SelectMaterialsPage, confirmNext=true});
+                    m_pages.Add(ProcessingPage,         new Page {title="Processing",          onGUI=OnProcessingPage,     nextPage=FinishPage});
+                    m_pages.Add(FinishPage,             new Page {title="Finished",            onGUI=OnDonePage, canncelable=false});
+                    m_pages.Add(CanncelPage,        new Page {title="Canncelled",          onGUI=OnCanncelPage, canncelable=false});
+
+                    GoPage( SelectMaterialsPage );
                     RefreshMaterialList();
                 }
 
                 ///<summary>
-                ///Use this for draw window.
+                ///\~english   Use this for draw window.
                 ///</summary>
                 void OnGUI(){
             
-                    // Draw Content
-                    using(var scr = new GUILayout.AreaScope(this.pageRect)){
-                        if( m_currentPage!=PageNum.None )
-                        {
-                            m_pages[m_currentPage].action();
-                        }
-                    }
-                    
-                    // Footer area
-                    using(var footer = new GUILayout.AreaScope(new Rect(10f,position.height-30f,position.width-20f,30f),"")){
-                    using(var bottom = new EditorGUILayout.HorizontalScope())
+                    // Draw a Page
+                    if( m_currentPage!=null )
                     {
-                        // Back button
-                        using(var dis = new EditorGUI.DisabledScope(m_prevPage==PageNum.None))
+                        // Draw GUI
+                        using(var scr = new GUILayout.AreaScope(this.pageRect))
                         {
-                            if( GUILayout.Button("Back", GUILayout.ExpandWidth(false)) )
-                            {
-                                PrevPage();
-                            }
+                            m_currentPage.DrawGUI(this);
                         }
-                            
-                        // Space between Back and Cancel
-                        GUILayout.FlexibleSpace();
+                        m_currentPage.DrawFooter(this);
+                    }
 
-                        // Cancel button
-                        if( GUILayout.Button("Cancel", GUILayout.ExpandWidth(false)) )
+                    // Process of page query
+                    if( !string.IsNullOrEmpty(m_pageQuery) )
+                    {
+                        // Close the window
+                        if( m_pageQuery==ExitSentinelPage )
                         {
-                            if( DisplayDialog("Do you want to abort the setup?") )
-                            {
-                                SetNextPage(PageNum.DonePage);
-                                NextPage();
-                            }
+                            this.Close();
                         }
-                            
-                        // Next & Finish button
-                        using(var dis = new EditorGUI.DisabledScope(m_nextPage==PageNum.None))
-                        {
-                            var label = (m_nextPage==PageNum.Finished) ? "Finish" : "Next";
-
-                            if( GUILayout.Button(label, GUILayout.ExpandWidth(false)) )
-                            {
-                                if( m_confirmContinuation && DisplayDialog("You can not UNDO the operation.\nAre you sure you want to proceed ? ") )
-                                {
-                                    NextPage();
-                                    m_confirmContinuation = false;
-                                }
-                                else if( !m_confirmContinuation )
-                                {
-                                    NextPage();
-                                }
-                                NextPage();
-                            }
+                        // Go other page
+                        else {
+                            m_currentPage = m_pages[m_pageQuery];
                         }
-                    }}// End of footer area
-                                  
-                }// End of OnGUI()
+                        m_pageQuery = null;
+                    }
+                }
 			#endregion
 
-			#region Pages
-                void DoMaterialListPage() {
-                    DoHeaderLabel(new GUIContent("Select Materials"));
+			#region Page Drawing Callbacks
+                void OnMaterialListPage(Page page) {
+
+                    // Page setting
+                    page.nextPage = (m_treeView.scheduledMaterialCount!=0) ? OptionsPage : null;
+                    
             
                     // Draw Search field
                     var rc = GUILayoutUtility.GetRect(0,100f,0,20);
@@ -520,21 +577,13 @@ namespace HoshiyukiToonShaderEditor.RampUpgradeWizard{
 
                     // Display num
                     GUILayout.Label(string.Format("Selected {0} of {1}.", m_treeView.scheduledMaterialCount, m_treeView.materialCount));
-
-                    // Page setting
-                    SetPrevPage(PageNum.None);
-                    SetNextPage( (m_treeView.scheduledMaterialCount!=0) ? PageNum.OperationChoosenPage : PageNum.None);
                 }
 
-                void DoOperationChoosenPage() {
+                void OnOptionPage(Page page) {
                     
-                    // Draw header
-                    DoHeaderLabel(new GUIContent("Options"));
-
                     // Draw options
-                    EditorGUILayout.Space();
-                    m_isCopyFromDirection       = GUILayout.Toggle(m_isCopyFromDirection, "Copy from Directional", EditorStyles.radioButton);
-                    m_isCopyFromDirection       = !GUILayout.Toggle(!m_isCopyFromDirection, "Apply Single Texture", EditorStyles.radioButton);
+                    m_isCopyFromDirection   = GUILayout.Toggle(m_isCopyFromDirection, "Copy from Directional", EditorStyles.radioButton);
+                    m_isCopyFromDirection   = !GUILayout.Toggle(!m_isCopyFromDirection, "Apply Single Texture", EditorStyles.radioButton);
 
                     // Draw texture setting
                     EditorGUI.indentLevel++;
@@ -545,63 +594,59 @@ namespace HoshiyukiToonShaderEditor.RampUpgradeWizard{
                     }
                     EditorGUI.EndDisabledGroup();
                     EditorGUI.indentLevel--;
-                    
-
-                    // Set page
-                    SetPrevPage(PageNum.MaterialListPage);
-                    SetNextPage(PageNum.DonePage);
                 }
 
-                void DoProcessingPage() {
+                void OnProcessingPage(Page page) {
                     
-                    var options = RampUpgradeOptions.Asynchronously
-                                    | (m_isCopyFromDirection ? RampUpgradeOptions.CopyFromDirectional : RampUpgradeOptions.ApplySingleTexture)
-                    ;
+                    if( Event.current.type!=EventType.Repaint )
+                    {
+                        var options = RampUpgradeOptions.Asynchronously
+                            | (m_isCopyFromDirection ? RampUpgradeOptions.CopyFromDirectional : RampUpgradeOptions.ApplySingleTexture)
+                        ;
 
-                    RampUpgrader.UpgradeMaterials(m_treeView.allMaterials, options, m_pointRampTex);
+                        RampUpgrader.UpgradeMaterials(m_treeView.allMaterials, options, m_pointRampTex);
+                        GoNextPage();
+                    }
                 }
 
-                void DoDonePage() {
-                    DoHeaderLabel(new GUIContent("Finished"));
+                void OnDonePage(Page page) {
+                    GUILayout.Label(  this.m_setupIsNotNeeded ? "Setup is not needed." : "Setup succeeded!");
+                }
 
-                    SetPrevPage(PageNum.None);
-                    SetNextPage(PageNum.Finished);
+                void OnCanncelPage(Page page) {
+                    GUILayout.Label("Setup is canncelled.");
                 }
 			#endregion
 
-			#region Methods
+			#region Page Accessing Methods
+                void GoPage(string page)
+                {
+                    m_pageQuery = string.IsNullOrEmpty(page) ? ExitSentinelPage : page;
+                }
+
+                void GoCanncelPage() {
+                    GoPage(CanncelPage);
+                }
+
+                void GoNextPage() {
+                    GoPage( m_currentPage.nextPage );
+                }
+
+                void GoPreviousPage() {
+                    GoPage( m_currentPage.previousPage );
+                }
+            #endregion
+
+            #region Misc Methods
                 void DoHeaderLabel(GUIContent content) {
-                    var rc  = GUILayoutUtility.GetRect(0f, s_headerLabelStyle.CalcHeight(content, this.pageRect.width));
+                    var rc  = GUILayoutUtility.GetRect(100f, s_headerLabelStyle.CalcHeight(content, this.pageRect.width));
                     GUI.Label(rc, content, s_headerLabelStyle);
                     EditorGUILayout.Space();
                 }
 
-                void SetPrevPage(PageNum num) {
-                    m_prevPage = num;
-                }
-
-                void SetNextPage(PageNum num) {
-                    m_nextPage = num;
-                }
-
-                void NextPage() {
-                    if( m_nextPage==PageNum.Finished )
-                    {
-                        this.Close();
-                    }
-                    else
-                    {
-                        m_currentPage = m_nextPage;
-                    }
-                }
-
-                void PrevPage() {
-                    m_currentPage = m_prevPage;
-                }
-
                 bool DisplayDialog(string message)
                 {
-                    return EditorUtility.DisplayDialog("Infomation", message, "OK");
+                    return EditorUtility.DisplayDialog("Infomation", message, "OK", "Canncel");
                 }
 
                 void RefreshMaterialList() {
@@ -609,8 +654,15 @@ namespace HoshiyukiToonShaderEditor.RampUpgradeWizard{
                     {
                         ScheduledMaterial[] pairs;
                         RampUpgrader.FindUnupdatedMaterials(out pairs);
-                        m_treeView.Reload( pairs );
-                        m_treeView.ExpandAll();
+                        if( pairs.Length==0 )
+                        {
+                            m_setupIsNotNeeded = true;
+                            GoPage(FinishPage);
+                        }
+                        else {
+                            m_treeView.Reload( pairs );
+                            m_treeView.ExpandAll();
+                        }
                     }
                     EditorUtility.ClearProgressBar();
                 }
