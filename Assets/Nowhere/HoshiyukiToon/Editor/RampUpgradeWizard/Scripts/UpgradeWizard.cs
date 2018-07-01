@@ -465,7 +465,7 @@ namespace HoshiyukiToonShaderEditor.RampUpgradeWizard{
                 SearchField         m_searchField;
                 
                 // Layout 
-                Rect pageRect {
+                Rect PageRect {
                     get {
                         return new Rect(
                             s_padding.left,
@@ -515,7 +515,7 @@ namespace HoshiyukiToonShaderEditor.RampUpgradeWizard{
                     m_pages.Add(OptionsPage,            new Page {title="Options",             onGUI=OnOptionPage,         nextPage=ProcessingPage, previousPage=SelectMaterialsPage, confirmNext=true});
                     m_pages.Add(ProcessingPage,         new Page {title="Processing",          onGUI=OnProcessingPage,     nextPage=FinishPage});
                     m_pages.Add(FinishPage,             new Page {title="Finished",            onGUI=OnDonePage, canncelable=false});
-                    m_pages.Add(CanncelPage,        new Page {title="Canncelled",          onGUI=OnCanncelPage, canncelable=false});
+                    m_pages.Add(CanncelPage,            new Page {title="Canncelled",          onGUI=OnCanncelPage, canncelable=false});
 
                     GoPage( SelectMaterialsPage );
                     RefreshMaterialList();
@@ -525,31 +525,36 @@ namespace HoshiyukiToonShaderEditor.RampUpgradeWizard{
                 ///\~english   Use this for draw window.
                 ///</summary>
                 void OnGUI(){
-            
+                    
+                    // Process of page query
+                    if( Event.current.type==EventType.Layout )
+                    {
+                        if( !string.IsNullOrEmpty(m_pageQuery) )
+                        {
+                            // Close the window
+                            if( m_pageQuery==ExitSentinelPage )
+                            {
+                                this.Close();
+                                return;
+                            }
+                            // Go to other page
+                            else {
+                                m_currentPage = m_pages[m_pageQuery];
+                            }
+                            m_pageQuery = null;
+                        }
+                    }
+                    
+                    
                     // Draw a Page
                     if( m_currentPage!=null )
                     {
                         // Draw GUI
-                        using(var scr = new GUILayout.AreaScope(this.pageRect))
+                        using(var scr = new GUILayout.AreaScope(this.PageRect))
                         {
                             m_currentPage.DrawGUI(this);
                         }
                         m_currentPage.DrawFooter(this);
-                    }
-
-                    // Process of page query
-                    if( !string.IsNullOrEmpty(m_pageQuery) )
-                    {
-                        // Close the window
-                        if( m_pageQuery==ExitSentinelPage )
-                        {
-                            this.Close();
-                        }
-                        // Go other page
-                        else {
-                            m_currentPage = m_pages[m_pageQuery];
-                        }
-                        m_pageQuery = null;
                     }
                 }
 			#endregion
@@ -639,7 +644,7 @@ namespace HoshiyukiToonShaderEditor.RampUpgradeWizard{
 
             #region Misc Methods
                 void DoHeaderLabel(GUIContent content) {
-                    var rc  = GUILayoutUtility.GetRect(100f, s_headerLabelStyle.CalcHeight(content, this.pageRect.width));
+                    var rc  = GUILayoutUtility.GetRect(100f, s_headerLabelStyle.CalcHeight(content, this.PageRect.width));
                     GUI.Label(rc, content, s_headerLabelStyle);
                     EditorGUILayout.Space();
                 }
@@ -666,6 +671,8 @@ namespace HoshiyukiToonShaderEditor.RampUpgradeWizard{
                     }
                     EditorUtility.ClearProgressBar();
                 }
+
+
 			#endregion
 		#endregion
 	}
