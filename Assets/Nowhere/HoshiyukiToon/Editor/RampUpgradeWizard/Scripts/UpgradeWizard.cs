@@ -526,6 +526,8 @@ namespace HoshiyukiToonShaderEditor.RampUpgradeWizard{
                 ///</summary>
                 void OnGUI(){
                     
+                    bool close = false;
+
                     // Process of page query
                     if( Event.current.type==EventType.Layout )
                     {
