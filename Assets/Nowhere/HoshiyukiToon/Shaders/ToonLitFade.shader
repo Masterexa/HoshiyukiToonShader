@@ -5,10 +5,12 @@
 Shader "HoshiyukiToon/LitFade" {
 	Properties {
 		// Lit
-		_Color		("Color", Color) = (0.5859,0.5859,0.5859,1)
-		_MainTex	("Albedo (RGB)", 2D) = "white" {}
-		_ToonTex	( "Ramp Texture", 2D ) = "white"{}
-		_ToonFactor	( "Ramp Factor", Range( 0,1 ) ) = 1
+		_Color				("Color", Color) = (1,1,1,1)
+		_MainTex			("Albedo (RGB)", 2D) = "white" {}
+		_Cutoff				("Clip Threshold", Range(0,1)) = 0.1
+		_ToonTex			("Ramp Texture", 2D) = "white"{}
+		_ToonPointLightTex	("Point Light Ramp Texture", 2D) = "white"{}
+		_ToonFactor			("Ramp Factor", Range( 0,1 ) ) = 1
 		// Occlusion
 		_OcclusionStrength	( "Occlusion Strength", Range( 0,1 ) )=0
 		_OcclusionMap		( "Occlusion Map", 2D )="white"{}
@@ -19,45 +21,36 @@ Shader "HoshiyukiToon/LitFade" {
 		// Lit Options
 		[ToggleOff]								_UseStandardGI("Use Standard GI", Float) = 0
 		[Enum(UnityEngine.Rendering.CullMode)]	_Cull("Cull Mode", Float ) = 2
+		[HideInInspector]						_Blend("Mode", Float) = 0
 	}
 	SubShader{
-		Tags { "RenderType" = "Opaque" "Queue"="Transparent" }
+		Tags { "RenderType" = "Transparent" "Queue"="Transparent" }
 		Cull [_Cull]
+		ZWrite Off
+		ColorMask RGB
 		LOD 200
+
+		Stencil
+		{
+			Ref 128
+			WriteMask 128
+			Comp Always
+			Pass Replace
+			Fail Keep
+		}
 
 		CGPROGRAM
 			#pragma multi_compile _ NWH_TOON_CUTOUT
 			#pragma multi_compile _ NWH_TOON_STANDARDGI
-			#pragma surface surf ToonRamp fullforwardshadows alpha:fade
-			#pragma lighting ToonRamp exclude_path:prepass
+			#pragma surface surfLitBase ToonRamp fullforwardshadows addshadow alpha:fade
 			#pragma target 3.0
-			#include "HoshiyukiToonLighting.cginc"
+			#define HTS_USE_POINTLIGHTRAMP
 
-			sampler2D	_MainTex;
-			fixed4		_Color;
-			fixed		_OcclusionStrength;
-			sampler2D	_OcclusionMap;
-
-			struct Input {
-				float2 uv_MainTex;
-			};
-
-
-			/** サーフェイスシェーダー.
-			 *
-			 */
-			void surf( Input IN, inout SurfaceOutputStandardSpecular o ) {
-				fixed4	c		= tex2D( _MainTex, IN.uv_MainTex ) * _Color;
-				half	oc		= lerp( 1, tex2D( _OcclusionMap, IN.uv_MainTex ).r, _OcclusionStrength );
-				o.Albedo		= c.rgb;
-				o.Occlusion		= oc;
-				o.Alpha			= c.a;
-				clip(o.Alpha);
-			}
+			#include "HoshiyukiToonSurfaceLitBase.cginc"
 		ENDCG
 
 		UsePass "HoshiyukiToon/Lit/SHADOWCASTER"
 	}
 	FallBack "Diffuse"
-	CustomEditor "NowhereUnityEditor.Rendering.HoshiyukiToonEditor"
+	CustomEditor "HoshiyukiToonShaderEditor.SurfaceShaderInspector"
 }

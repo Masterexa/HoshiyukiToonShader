@@ -5,10 +5,11 @@
 Shader "HoshiyukiToon/Lit" {
 	Properties {
 		// Lit
-		_Color				("Color", Color) = (0.5859,0.5859,0.5859,1)
+		_Color				("Color", Color) = (1,1,1,1)
 		_MainTex			("Albedo (RGB)", 2D) = "white" {}
 		_Cutoff				("Clip Threshold", Range(0,1)) = 0.1
 		_ToonTex			("Ramp Texture", 2D) = "white"{}
+		_ToonPointLightTex	("Point Light Ramp Texture", 2D) = "white"{}
 		_ToonFactor			("Ramp Factor", Range( 0,1 ) ) = 1
 		// Occlusion
 		_OcclusionStrength	("Occlusion Strength", Range(0,1))=0
@@ -30,37 +31,11 @@ Shader "HoshiyukiToon/Lit" {
 		CGPROGRAM
 			#pragma multi_compile _ NWH_TOON_CUTOUT
 			#pragma multi_compile _ NWH_TOON_STANDARDGI
-			#pragma surface surf ToonRamp fullforwardshadows addshadow
-			#pragma lighting ToonRamp exclude_path:prepass
+			#pragma surface surfLitBase ToonRamp fullforwardshadows addshadow
 			#pragma target 3.0
-			#include "HoshiyukiToonLighting.cginc"
+			#define HTS_USE_POINTLIGHTRAMP
 
-			fixed		_Cutoff;
-			sampler2D	_MainTex;
-			fixed4		_Color;
-			fixed		_OcclusionStrength;
-			sampler2D	_OcclusionMap;
-			half3		_EmissionColor;
-			sampler2D	_EmissionMap;
-
-			struct Input {
-				float2	uv_MainTex;
-			};
-
-			/** サーフェイスシェーダー.
-			 *
-			 */
-			void surf( Input IN, inout SurfaceOutputStandardSpecular o ) {
-				fixed4	c		= tex2D( _MainTex, IN.uv_MainTex ) * _Color;
-				half3	emit	= tex2D( _EmissionMap, IN.uv_MainTex ).rgb * _EmissionColor;
-				half	oc		= lerp(1, tex2D(_OcclusionMap,IN.uv_MainTex).r, _OcclusionStrength);
-
-				o.Albedo		= c.rgb;
-				o.Emission		= emit;
-				o.Occlusion		= oc;
-				o.Alpha			= c.a - _Cutoff;
-				CLIP_PROCESS(o)
-			}
+			#include "HoshiyukiToonSurfaceLitBase.cginc"
 		ENDCG
 
 
@@ -95,5 +70,5 @@ Shader "HoshiyukiToon/Lit" {
         }
 	}
 	FallBack "Diffuse"
-	CustomEditor "NowhereUnityEditor.Rendering.HoshiyukiToonEditor"
+	CustomEditor "HoshiyukiToonShaderEditor.SurfaceShaderInspector"
 }

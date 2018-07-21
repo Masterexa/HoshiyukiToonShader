@@ -2,32 +2,42 @@
   "renderingMode": {
     "m_Text": "レンダリングモード",
     "m_Image": { "instanceID": 0 },
-    "m_Tooltip": "Opaque : 不透明のポリゴン\nCutoff : 穴あきポリゴン"
+    "m_Tooltip": "Opaque : 不透明のポリゴン\nCutoff : 切り抜きポリゴン"
   },
   "albedoText": {
     "m_Text": "アルベド",
     "m_Image": { "instanceID": 0 },
-    "m_Tooltip": "反射率(RGB)と不透明度(アルファ)の設定"
+    "m_Tooltip": "反射率(RGB)と不透明度(A)の設定"
   },
   "alphaCutoffText": {
     "m_Text": "しきい値",
     "m_Image": { "instanceID": 0 },
-    "m_Tooltip": ""
+    "m_Tooltip": "切り抜きの基準となる値(A)"
   },
   "rampText": {
     "m_Text": "ランプ",
     "m_Image": { "instanceID": 0 },
     "m_Tooltip": "陰影の設定"
   },
+  "rampDirectionalText": {
+    "m_Text": "ディレクショナル",
+    "m_Image": { "instanceID": 0 },
+    "m_Tooltip": "ディレクショナルライトのランプテクスチャ"
+  },
+  "rampPointText": {
+    "m_Text": "ポイント",
+    "m_Image": { "instanceID": 0 },
+    "m_Tooltip": "ポイントライトのランプテクスチャ"
+  },
   "occlusionText": {
     "m_Text": "オクルージョン",
     "m_Image": { "instanceID": 0 },
-    "m_Tooltip": "遮蔽マップの設定"
+    "m_Tooltip": "遮蔽マップの設定(G)"
   },
   "emissionText": {
     "m_Text": "発光",
     "m_Image": { "instanceID": 0 },
-    "m_Tooltip": ""
+    "m_Tooltip": "発光の設定(HDR)"
   },
   "lineSizeText": {
     "m_Text": "サイズ",
@@ -37,12 +47,12 @@
   "lineColorText": {
     "m_Text": "色",
     "m_Image": { "instanceID": 0 },
-    "m_Tooltip": "色(RGB)と不透明度(アルファ)の設定"
+    "m_Tooltip": "色(RGB)と不透明度(A)の設定"
   },
   "standardGIText": {
     "m_Text": "標準のGIを使う",
     "m_Image": { "instanceID": 0 },
-    "m_Tooltip": "Unityの一般的な方法でGIを受け取る"
+    "m_Tooltip": "Unityの標準的なGIを利用する"
   },
   "cullModeText": {
     "m_Text": "カリングモード",

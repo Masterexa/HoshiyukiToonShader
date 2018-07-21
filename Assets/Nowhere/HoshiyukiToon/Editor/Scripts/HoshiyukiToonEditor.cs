@@ -6,13 +6,13 @@ using UnityEngine;
 using UnityEditor;
 
 
-namespace NowhereUnityEditor.Rendering{
+namespace HoshiyukiToonShaderEditor{
 
 	///<summary>シェーダーのカスタムエディタ</summary>
 	///<remarks>
 	///
 	///</remarks>
-	public class HoshiyukiToonEditor : ShaderGUI{
+	public class SurfaceShaderInspector : ShaderGUI{
 
         #region Typedefs
             enum BlendMode {
@@ -32,13 +32,16 @@ namespace NowhereUnityEditor.Rendering{
             class Styles {
                 public GUIContent renderingMode  = new GUIContent("Rendering Mode", "Rendering Mode");
                 public GUIContent albedoText     = new GUIContent("Albedo", "Albedo(RGB) and Transparency(Alpha)");
-                public GUIContent alphaCutoffText= new GUIContent("Alpha Cutoff", "");
-                public GUIContent rampText       = new GUIContent("Ramp", "");
+                public GUIContent alphaCutoffText= new GUIContent("Alpha Cutoff", "Threshold of Cutoff(A)");
 
-                public GUIContent occlusionText  = new GUIContent("Occlusion", "");
+                public GUIContent rampText              = new GUIContent("Ramp", "");
+                public GUIContent rampDirectionalText   = new GUIContent("Directional", "Ramp texture of directional light");
+                public GUIContent rampPointText         = new GUIContent("Point", "Ramp texture of point light");
+
+                public GUIContent occlusionText  = new GUIContent("Occlusion", "Occlusion(G)");
                 public GUIContent emissionText   = new GUIContent("Emission", "");
 
-                public GUIContent lineSizeText   = new GUIContent("Size", "Size of Outline(Viewport Space)");
+                public GUIContent lineSizeText   = new GUIContent("Size", "Size of outline(Viewport Space)");
                 public GUIContent lineColorText  = new GUIContent("Color", "Color(RGB) and Transparency(Alpha)");
 
                 public GUIContent standardGIText = new GUIContent("Use Traditional GI", "");
@@ -61,6 +64,7 @@ namespace NowhereUnityEditor.Rendering{
                 MaterialProperty    albedoMap;
                 MaterialProperty    alphaCutoff;
                 MaterialProperty    rampMap;
+                MaterialProperty    rampPointMap;
                 MaterialProperty    rampFactor;
                 MaterialProperty    occlusionFactor;
                 MaterialProperty    occlusionMap;
@@ -69,6 +73,7 @@ namespace NowhereUnityEditor.Rendering{
 
                 MaterialProperty    lineColor;
                 MaterialProperty    lineSize;
+                MaterialProperty    lineCull;
                 
                 MaterialProperty    cullMode;
                 MaterialProperty    useStandardGI;
@@ -82,7 +87,7 @@ namespace NowhereUnityEditor.Rendering{
             #region Properties
             #endregion
 
-            #region Events
+            #region GUI Methods
                 public override void OnGUI(MaterialEditor materialEditor, MaterialProperty[] props) {
             
                     if( s_styles==null )
@@ -109,25 +114,13 @@ namespace NowhereUnityEditor.Rendering{
                     
                     EditorGUI.BeginChangeCheck();
                     {
-                        EditorGUILayout.HelpBox(s_styles.tipsText, MessageType.Info);
-                        BlendModeProp();
+                        //EditorGUILayout.HelpBox(s_styles.tipsText, MessageType.Info);
 
-                        // Base Color Area
-                        GUILayout.Label(s_styles.primaryMapsText, EditorStyles.boldLabel);
-                        DoAlbedoArea(mtl);
-                        m_materialEditor.TexturePropertySingleLine(s_styles.rampText, rampMap, (rampMap.textureValue!=null) ? rampFactor : null);
-                        m_materialEditor.TexturePropertySingleLine(s_styles.occlusionText, occlusionMap, (occlusionMap.textureValue!=null) ? occlusionFactor : null);
-                        DoEmissionArea(mtl);
-                        m_materialEditor.TextureScaleOffsetProperty(albedoMap);
-
-                        // Outline Area
+                        // Menus
+                        DoRenderingSettingsArea(mtl);
+                        DoBaseMapArea(mtl);
                         DoLineArea(mtl);
-
-                        // Options Area
-                        EditorGUILayout.Space();
-                        GUILayout.Label(s_styles.advancedOptionsText, EditorStyles.boldLabel);
-                        m_materialEditor.ShaderProperty(cullMode, s_styles.cullModeText);
-                        m_materialEditor.ShaderProperty(useStandardGI, s_styles.standardGIText);
+                        DoOptionsArea(mtl);
                     }
                     if( EditorGUI.EndChangeCheck() )
                     {
@@ -135,9 +128,53 @@ namespace NowhereUnityEditor.Rendering{
                             MaterialChanged((Material)it);
                     }
                 }
-            #endregion
 
-            #region Pipeline
+                void DoRenderingSettingsArea(Material mtl){
+                    BlendModeProp();
+                    m_materialEditor.ShaderProperty(cullMode, s_styles.cullModeText);
+                }
+
+                void DoBaseMapArea(Material mtl) {
+                    GUILayout.Label(s_styles.primaryMapsText, EditorStyles.boldLabel);
+                    DoAlbedoArea(mtl);
+                    DoRampArea(mtl);
+                    m_materialEditor.TexturePropertySingleLine(s_styles.occlusionText, occlusionMap, (occlusionMap.textureValue!=null) ? occlusionFactor : null);
+                    DoEmissionArea(mtl);
+                    m_materialEditor.TextureScaleOffsetProperty(albedoMap);
+                }
+
+                void DoRampArea(Material mtl) {
+            
+                    m_materialEditor.ShaderProperty(rampFactor, s_styles.rampText);
+                    EditorGUI.indentLevel++;
+                    {
+                        m_materialEditor.TexturePropertySingleLine(s_styles.rampDirectionalText, rampMap);
+                        m_materialEditor.TexturePropertySingleLine(s_styles.rampPointText, rampPointMap);
+                    }
+                    EditorGUI.indentLevel--;
+                }
+
+                void DoLineArea(Material mtl) {
+                    if( (m_editFlag&EditFlag.Line)!=0 )
+                    {
+                        EditorGUILayout.Space();
+                        GUILayout.Label(s_styles.lineSettingsText, EditorStyles.boldLabel);
+
+                        m_materialEditor.ShaderProperty(lineColor, s_styles.lineColorText);
+                        m_materialEditor.ShaderProperty(lineSize, s_styles.lineSizeText);
+                        if( lineCull!=null )
+                        {
+                            m_materialEditor.ShaderProperty(lineCull, s_styles.cullModeText);
+                        }
+                    }
+                }
+
+                void DoOptionsArea(Material mtl) {
+                    EditorGUILayout.Space();
+                    GUILayout.Label(s_styles.advancedOptionsText, EditorStyles.boldLabel);
+                    m_materialEditor.ShaderProperty(useStandardGI, s_styles.standardGIText);
+                }
+
                 void BlendModeProp() {
                     if( (m_editFlag&EditFlag.ModeEditable)==0 )
                     {
@@ -186,18 +223,9 @@ namespace NowhereUnityEditor.Rendering{
                     // Emission for GI ?
                     m_materialEditor.LightmapEmissionProperty(MaterialEditor.kMiniTextureFieldLabelIndentLevel + 1);
                 }
+            #endregion
 
-                void DoLineArea(Material mtl) {
-                    if( (m_editFlag&EditFlag.Line)!=0 )
-                    {
-                        EditorGUILayout.Space();
-                        GUILayout.Label(s_styles.lineSettingsText, EditorStyles.boldLabel);
-
-                        m_materialEditor.ShaderProperty(lineColor, s_styles.lineColorText);
-                        m_materialEditor.ShaderProperty(lineSize, s_styles.lineSizeText);    
-                    }
-                }
-
+            #region Pipeline
                 void FindProperties(MaterialProperty[] props) {
                     
                     m_editFlag = EditFlag.None;
@@ -208,14 +236,16 @@ namespace NowhereUnityEditor.Rendering{
                     albedoColor         = FindProperty("_Color", props);
                     alphaCutoff         = FindProperty("_Cutoff", props, false);
                     rampMap             = FindProperty("_ToonTex", props);
+                    rampPointMap        = FindProperty("_ToonPointLightTex", props);
                     rampFactor          = FindProperty("_ToonFactor", props);
                     occlusionFactor     = FindProperty("_OcclusionStrength", props);
                     occlusionMap        = FindProperty("_OcclusionMap", props);
                     emissionColor       = FindProperty("_EmissionColor", props);
                     emissionMap         = FindProperty("_EmissionMap", props);
                     // Outline
-                    lineColor           = FindProperty("_OutlineColor", props, false);
-                    lineSize            = FindProperty("_OutlineSize", props, false);
+                    lineColor   = FindProperty("_OutlineColor", props, false);
+                    lineSize    = FindProperty("_OutlineSize", props, false);
+                    lineCull    = FindProperty("_OutlineCull", props, false);
                     // Option
                     cullMode                = FindProperty("_Cull", props);
                     useStandardGI           = FindProperty("_UseStandardGI", props);
