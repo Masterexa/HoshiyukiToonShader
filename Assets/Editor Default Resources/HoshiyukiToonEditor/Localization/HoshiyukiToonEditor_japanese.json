@@ -20,12 +20,12 @@
     "m_Tooltip": "陰影の設定"
   },
   "rampDirectionalText": {
-    "m_Text": "ディレクショナル",
+    "m_Text": "平行光源",
     "m_Image": { "instanceID": 0 },
     "m_Tooltip": "ディレクショナルライトのランプテクスチャ"
   },
   "rampPointText": {
-    "m_Text": "ポイント",
+    "m_Text": "点光源",
     "m_Image": { "instanceID": 0 },
     "m_Tooltip": "ポイントライトのランプテクスチャ"
   },
@@ -50,7 +50,7 @@
     "m_Tooltip": "色(RGB)と不透明度(A)の設定"
   },
   "standardGIText": {
-    "m_Text": "標準のGIを使う",
+    "m_Text": "単色GIを無効にする",
     "m_Image": { "instanceID": 0 },
     "m_Tooltip": "Unityの標準的なGIを利用する"
   },
