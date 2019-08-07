@@ -1,13 +1,19 @@
-﻿/** 半透明のシェード.
+/** 半透明のシェード.
  *
  * @date	2017/12/7
  */
 Shader "HoshiyukiToon/LitFade" {
 	Properties {
 		// Lit
-		_Color				("Color", Color) = (1,1,1,1)
-		_MainTex			("Albedo (RGB)", 2D) = "white" {}
-		_Cutoff				("Clip Threshold", Range(0,1)) = 0.1
+		_Color					("Color", Color) = (1,1,1,1)
+		_MainTex				("Albedo (RGB)", 2D) = "white" {}
+		_Cutoff					("Clip Threshold", Range(0,1)) = 0.1
+		// Metallic and Smoothness
+		_Glossiness				("Smoothness", Range(0,1))=0.5
+		[Gamma]_Metallic		("Metallic", Range(0,1))=0.0
+		[Gamma]_SpecularFactor	("Specular", Range(0,1))=0.0
+		_MetallicGlossMap		("Metallic", 2D)="white"{}
+		// Toon
 		_ToonTex			("Ramp Texture", 2D) = "white"{}
 		_ToonPointLightTex	("Point Light Ramp Texture", 2D) = "white"{}
 		_ToonFactor			("Ramp Factor", Range( 0,1 ) ) = 1
@@ -42,7 +48,7 @@ Shader "HoshiyukiToon/LitFade" {
 		CGPROGRAM
 			#pragma multi_compile _ NWH_TOON_CUTOUT
 			#pragma multi_compile _ NWH_TOON_STANDARDGI
-			#pragma surface surfLitBase ToonRamp fullforwardshadows addshadow alpha:fade
+			#pragma surface surfLitBase ToonRampMetallic2 fullforwardshadows addshadow alpha:fade
 			#pragma target 3.0
 			#define HTS_USE_POINTLIGHTRAMP
 

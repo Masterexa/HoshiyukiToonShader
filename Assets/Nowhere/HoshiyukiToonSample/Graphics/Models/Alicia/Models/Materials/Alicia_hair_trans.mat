@@ -34,6 +34,10 @@ Material:
         m_Texture: {fileID: 2800000, guid: 5a994601d562d2f4da97ab76e34e0d98, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _MetallicGlossMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _OcclusionMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -47,7 +51,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _ToonPointLightTex:
-        m_Texture: {fileID: 2800000, guid: cefca8a0a69097e41ba731f63b7afa9a, type: 3}
+        m_Texture: {fileID: 2800000, guid: e0d0bc58abcdec940b9cc25d7f51d5a6, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _ToonTex:
@@ -58,11 +62,15 @@ Material:
     - _Blend: 0
     - _Cull: 2
     - _Cutoff: 0.1
+    - _Glossiness: 0.5
     - _Gross: 0.34571427
+    - _Metallic: 0
     - _OcclusionStrength: 0
+    - _OutlineCull: 1
     - _OutlineDepth: 0.1
     - _OutlineSize: 0.002
     - _OutlineWidth: 0.11
+    - _SpecularFactor: 0
     - _ToonFactor: 1
     - _UseStandardGI: 0
     m_Colors:

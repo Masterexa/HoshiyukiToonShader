@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -71,6 +71,11 @@ namespace HoshiyukiToonShaderEditor{
                 MaterialProperty    emissionColor;
                 MaterialProperty    emissionMap;
 
+                MaterialProperty metallicGlossMap;
+                MaterialProperty metallicFactor;
+                MaterialProperty smoothnessFactor;
+                MaterialProperty specularFactor;
+
                 MaterialProperty    lineColor;
                 MaterialProperty    lineSize;
                 MaterialProperty    lineCull;
@@ -137,21 +142,35 @@ namespace HoshiyukiToonShaderEditor{
                 void DoBaseMapArea(Material mtl) {
                     GUILayout.Label(s_styles.primaryMapsText, EditorStyles.boldLabel);
                     DoAlbedoArea(mtl);
+                    DoSpecularArea(mtl);
                     DoRampArea(mtl);
                     m_materialEditor.TexturePropertySingleLine(s_styles.occlusionText, occlusionMap, (occlusionMap.textureValue!=null) ? occlusionFactor : null);
                     DoEmissionArea(mtl);
                     m_materialEditor.TextureScaleOffsetProperty(albedoMap);
                 }
 
-                void DoRampArea(Material mtl) {
-            
-                    m_materialEditor.ShaderProperty(rampFactor, s_styles.rampText);
-                    EditorGUI.indentLevel++;
+                void DoSpecularArea(Material mtl)
+                {
+                    m_materialEditor.TexturePropertySingleLine(new GUIContent(specularFactor.displayName), metallicGlossMap, specularFactor);
+                    EditorGUI.indentLevel += 2;
                     {
+                        //m_materialEditor.ShaderProperty(specularFactor, new GUIContent("Intensity"));
+                        m_materialEditor.ShaderProperty(metallicFactor, new GUIContent(metallicFactor.displayName));
+                        m_materialEditor.ShaderProperty(smoothnessFactor, new GUIContent(smoothnessFactor.displayName));
+                    }
+                    EditorGUI.indentLevel -= 2;
+                }
+
+                void DoRampArea(Material mtl) {
+
+                    EditorGUILayout.LabelField(s_styles.rampText);
+                    EditorGUI.indentLevel+=2;
+                    {
+                        m_materialEditor.ShaderProperty(rampFactor, new GUIContent("Intensity"));
                         m_materialEditor.TexturePropertySingleLine(s_styles.rampDirectionalText, rampMap);
                         m_materialEditor.TexturePropertySingleLine(s_styles.rampPointText, rampPointMap);
                     }
-                    EditorGUI.indentLevel--;
+                    EditorGUI.indentLevel-=2;
                 }
 
                 void DoLineArea(Material mtl) {
@@ -242,6 +261,11 @@ namespace HoshiyukiToonShaderEditor{
                     occlusionMap        = FindProperty("_OcclusionMap", props);
                     emissionColor       = FindProperty("_EmissionColor", props);
                     emissionMap         = FindProperty("_EmissionMap", props);
+
+                    metallicGlossMap    = FindProperty("_MetallicGlossMap", props);
+                    metallicFactor      = FindProperty("_Metallic", props);
+                    smoothnessFactor    = FindProperty("_Glossiness", props);
+                    specularFactor      = FindProperty("_SpecularFactor", props);
                     // Outline
                     lineColor   = FindProperty("_OutlineColor", props, false);
                     lineSize    = FindProperty("_OutlineSize", props, false);

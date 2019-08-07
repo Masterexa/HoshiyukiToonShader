@@ -7,13 +7,14 @@ Material:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_Name: Alicia_rod 2
-  m_Shader: {fileID: 4800000, guid: d6ca4d37b0ad45e429f895352d602cb5, type: 3}
-  m_ShaderKeywords: _USESTANDARDGI_OFF
-  m_LightmapFlags: 4
+  m_Shader: {fileID: 46, guid: 0000000000000000f000000000000000, type: 0}
+  m_ShaderKeywords: _ALPHAPREMULTIPLY_ON _EMISSION _USESTANDARDGI_OFF
+  m_LightmapFlags: 1
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
-  m_CustomRenderQueue: -1
-  stringTagMap: {}
+  m_CustomRenderQueue: 3000
+  stringTagMap:
+    RenderType: Transparent
   disabledShaderPasses: []
   m_SavedProperties:
     serializedVersion: 3
@@ -30,6 +31,18 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _DetailAlbedoMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DetailMask:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DetailNormalMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _EmissionMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -38,7 +51,15 @@ Material:
         m_Texture: {fileID: 2800000, guid: 1893a070e829244488dc40d94b778d93, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _MetallicGlossMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _OcclusionMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _ParallaxMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
@@ -47,7 +68,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _ToonPointLightTex:
-        m_Texture: {fileID: 2800000, guid: cefca8a0a69097e41ba731f63b7afa9a, type: 3}
+        m_Texture: {fileID: 2800000, guid: e0d0bc58abcdec940b9cc25d7f51d5a6, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _ToonTex:
@@ -57,17 +78,33 @@ Material:
     m_Floats:
     - PixelSnap: 0
     - _Blend: 0
+    - _BumpScale: 1
     - _Cull: 2
     - _Cutoff: 0.1
+    - _DetailNormalMapScale: 1
+    - _DstBlend: 10
+    - _GlossMapScale: 1
+    - _Glossiness: 0.863
+    - _GlossyReflections: 1
     - _Gross: 0.028571427
+    - _Metallic: 0
+    - _Mode: 3
     - _OcclusionStrength: 0
+    - _OutlineCull: 1
     - _OutlineSize: 0.002
     - _OutlineWidth: 0.11
+    - _Parallax: 0.02
+    - _SmoothnessTextureChannel: 0
+    - _SpecularFactor: 0
+    - _SpecularHighlights: 1
+    - _SrcBlend: 1
     - _ToonFactor: 1
+    - _UVSec: 0
     - _UseStandardGI: 0
+    - _ZWrite: 0
     m_Colors:
-    - _Color: {r: 1, g: 1, b: 1, a: 1}
-    - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
+    - _Color: {r: 1, g: 1, b: 1, a: 0}
+    - _EmissionColor: {r: 0.6, g: 0.6, b: 0.6, a: 1}
     - _OutlineColor: {r: 0.14705884, g: 0.14635785, b: 0.14597753, a: 1}
     - _RimColor: {r: 0.31617647, g: 0.31617647, b: 0.31617647, a: 1}
     - _ShadowColor: {r: 0.60051906, g: 0.58704585, b: 0.6544118, a: 1}
