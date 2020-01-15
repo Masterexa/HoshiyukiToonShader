@@ -16,6 +16,11 @@ sampler2D	_OcclusionMap;
 half3		_EmissionColor;
 sampler2D	_EmissionMap;
 
+fixed       _Glossiness;
+fixed       _Metallic;
+fixed       _SpecularFactor;
+sampler2D   _MetallicGlossMap;
+
 
 
 /* typedefs */
@@ -23,6 +28,13 @@ sampler2D	_EmissionMap;
 		float2 uv_MainTex;
 	};
 
+
+inline half4 SampleMOXSMap(float2 uv)
+{
+    half4 moxs  = tex2D(_MetallicGlossMap, uv) * half4(_Metallic,0,0,_Glossiness);
+    moxs.g      = lerp(1, tex2D(_OcclusionMap, uv).g, _OcclusionStrength);
+    return moxs;
+}
 
 
 /* Shader kernels */
@@ -32,11 +44,14 @@ sampler2D	_EmissionMap;
 	void surfLitBase( Input IN, inout SurfaceOutputStandardSpecular o ) {
 		fixed4	c		= tex2D(_MainTex, IN.uv_MainTex) * _Color;
 		half3	emit	= tex2D(_EmissionMap, IN.uv_MainTex).rgb * _EmissionColor;
-		half	oc		= lerp(1, tex2D(_OcclusionMap, IN.uv_MainTex).g, _OcclusionStrength);
+        half4   moxs    = SampleMOXSMap(IN.uv_MainTex);
 
+        o.Specular.r    = moxs.r;
+        o.Specular.g    = _SpecularFactor;
+        o.Smoothness    = moxs.a;
 		o.Albedo		= c.rgb;
 		o.Emission		= emit;
-		o.Occlusion		= oc;
+		o.Occlusion		= moxs.g;
 		o.Alpha			= c.a;
 
 		#ifdef NWH_TOON_CUTOUT

@@ -7,7 +7,7 @@ Material:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_Name: Suzanne_ao 1
-  m_Shader: {fileID: 4800000, guid: 52c4243760885f14aa1eac817b753de4, type: 3}
+  m_Shader: {fileID: 4800000, guid: fc2ddc8efca29684b8c4f75da4d47a4c, type: 3}
   m_ShaderKeywords: NWH_TOON_CUTOUT _USESTANDARDGI_OFF
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
