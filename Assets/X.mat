@@ -7,8 +7,8 @@ Material:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_Name: X
-  m_Shader: {fileID: 4800000, guid: d6ca4d37b0ad45e429f895352d602cb5, type: 3}
-  m_ShaderKeywords: _USESTANDARDGI_OFF
+  m_Shader: {fileID: 4800000, guid: 78168c44f1bc4b940bc7e6671a5bce71, type: 3}
+  m_ShaderKeywords: _ALPHABLEND_ON _USESTANDARDGI_OFF
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -66,14 +66,14 @@ Material:
     - _Blend: 0
     - _BumpScale: 1
     - _Cull: 2
-    - _Cutoff: 0.5
+    - _Cutoff: 0
     - _DetailNormalMapScale: 1
-    - _DstBlend: 0
+    - _DstBlend: 10
     - _GlossMapScale: 1
-    - _Glossiness: 1
+    - _Glossiness: 0.948
     - _GlossyReflections: 1
     - _Metallic: 0
-    - _Mode: 0
+    - _Mode: 2
     - _OcclusionStrength: 1
     - _OutlineCull: 1
     - _OutlineSize: 0.002
@@ -81,12 +81,12 @@ Material:
     - _SmoothnessTextureChannel: 0
     - _SpecularFactor: 1
     - _SpecularHighlights: 1
-    - _SrcBlend: 1
+    - _SrcBlend: 5
     - _ToonFactor: 1
     - _UVSec: 0
     - _UseStandardGI: 0
-    - _ZWrite: 1
+    - _ZWrite: 0
     m_Colors:
-    - _Color: {r: 0, g: 0.46206903, b: 1, a: 1}
+    - _Color: {r: 0, g: 0.46206903, b: 1, a: 0.553}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _OutlineColor: {r: 0, g: 0.17352945, b: 0.375, a: 0.89}
+    - _OutlineColor: {r: 0, g: 0.22797005, b: 0.49264705, a: 0.89}

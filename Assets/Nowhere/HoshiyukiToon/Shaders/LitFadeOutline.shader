@@ -38,6 +38,10 @@ Shader "HoshiyukiToon/LitFadeOutline"
 	SubShader
 	{
 		Tags{"RenderType" = "Transparent" "Queue"="Transparent"}
+		Cull[_Cull]
+		ZWrite Off
+		Blend SrcAlpha OneMinusSrcAlpha
+		Offset -1, -1
 		UsePass "HoshiyukiToon/LitFade/FORWARD"
 		UsePass "HoshiyukiToon/Lit/SHADOWCASTER"
 

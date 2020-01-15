@@ -30,10 +30,12 @@ Shader "HoshiyukiToon/LitFade" {
 		[HideInInspector]						_Blend("Mode", Float) = 0
 	}
 	SubShader{
-		Tags { "RenderType" = "Transparent" "Queue"="Transparent" }
+		Tags { "RenderType" = "Transparent" "Queue"="Transparent"}
 		Cull [_Cull]
 		ZWrite Off
+		Blend SrcAlpha OneMinusSrcAlpha
 		ColorMask RGB
+		Offset -1, -1
 		LOD 200
 
 		Stencil
@@ -48,7 +50,7 @@ Shader "HoshiyukiToon/LitFade" {
 		CGPROGRAM
 			#pragma multi_compile _ NWH_TOON_CUTOUT
 			#pragma multi_compile _ NWH_TOON_STANDARDGI
-			#pragma surface surfLitBase ToonRampMetallic2 fullforwardshadows addshadow alpha:fade
+			#pragma surface surfLitBase ToonRampMetallic2 fullforwardshadows keepalpha
 			#pragma target 3.0
 			#define HTS_USE_POINTLIGHTRAMP
 
