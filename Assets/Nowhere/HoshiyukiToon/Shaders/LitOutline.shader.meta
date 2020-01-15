@@ -1,12 +1,13 @@
 fileFormatVersion: 2
 guid: d6ca4d37b0ad45e429f895352d602cb5
-timeCreated: 1526397057
-licenseType: Free
 ShaderImporter:
+  externalObjects: {}
   defaultTextures:
   - _MainTex: {instanceID: 0}
-  - _ToonTex: {fileID: 2800000, guid: db2775c46046b454981ff2e14d5fea78, type: 3}
-  - _ToonPointLightTex: {fileID: 2800000, guid: 6ad451bf77b60674f84729a96d3fb7cd, type: 3}
+  - _MetallicGlossMap: {instanceID: 0}
+  - _ToonTex: {fileID: 2800000, guid: 9c3d604ca947fd34ab056c8bf5b1d533, type: 3}
+  - _ToonPointLightTex: {fileID: 2800000, guid: 9c3d604ca947fd34ab056c8bf5b1d533,
+      type: 3}
   - _OcclusionMap: {instanceID: 0}
   - _EmissionMap: {instanceID: 0}
   userData: 

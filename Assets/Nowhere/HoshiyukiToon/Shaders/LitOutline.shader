@@ -1,4 +1,4 @@
-﻿/** アウトライン付きのトゥーンシェード.
+/** アウトライン付きのトゥーンシェード.
  *
  * @date	2017/12/7
  */
@@ -10,6 +10,12 @@ Shader "HoshiyukiToon/LitOutline"
 		_Color		("Color", Color) = (1,1,1,1)
 		_MainTex	("Albedo (RGB)", 2D) = "white" {}
 		_Cutoff		("Clip Threshold", Range(0,1))=0.1
+		// Metallic and Smoothness
+		_Glossiness("Smoothness", Range(0,1))=0.5
+		[Gamma]_Metallic("Metallic", Range(0,1))=0.0
+		[Gamma]_SpecularFactor("Specular", Range(0,1))=0.0
+		_MetallicGlossMap("Metallic", 2D)="white"{}
+		// Toon
 		_ToonTex	("Ramp Texture", 2D) = "white"{}
 		_ToonPointLightTex("Point Light Ramp Texture", 2D) = "white"{}
 		_ToonFactor	("Ramp Factor", Range( 0,1 ) ) = 1
