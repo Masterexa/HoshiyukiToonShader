@@ -29,7 +29,11 @@ namespace HoshiyukiToonShaderEditor.RampUpgradeWizard {
         #region Methods
             public static void UpgradeMaterials(ScheduledMaterial[] scheduledMaterials, RampUpgradeOptions options=RampUpgradeOptions.CopyFromDirectional, Texture2D pointRampTexture=null)
             {
-                var materials = scheduledMaterials.Where( (it)=>it.isScheduled ).ToArray();
+                var materials = scheduledMaterials
+                    .Where( (it)=>it.isScheduled )
+                    .Select( (it)=>it.material )
+                    .ToArray()
+                ;
 
                 UpgradeMaterials(materials, options, pointRampTexture);
             }
