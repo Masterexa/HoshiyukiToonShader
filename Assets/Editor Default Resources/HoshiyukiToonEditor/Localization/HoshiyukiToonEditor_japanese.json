@@ -54,6 +54,11 @@
     "m_Image": { "instanceID": 0 },
     "m_Tooltip": "Unityの標準的なGIを利用する"
   },
+  "blendOcclusionToAlbedoText":{
+    "m_Text": "オクルージョンをアルベドに適用",
+    "m_Image": { "instanceID": 0 },
+    "m_Tooltip": ""
+  },
   "cullModeText": {
     "m_Text": "カリングモード",
     "m_Image": { "instanceID": 0 },
@@ -63,5 +68,4 @@
   "primaryMapsText": "Main Maps",
   "lineSettingsText": "Outline",
   "advancedOptionsText": "Options"
-
 }

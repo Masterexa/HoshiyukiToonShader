@@ -5,8 +5,8 @@ ShaderImporter:
   defaultTextures:
   - _MainTex: {instanceID: 0}
   - _MetallicGlossMap: {instanceID: 0}
-  - _ToonTex: {fileID: 2800000, guid: 9c3d604ca947fd34ab056c8bf5b1d533, type: 3}
-  - _ToonPointLightTex: {fileID: 2800000, guid: 9c3d604ca947fd34ab056c8bf5b1d533,
+  - _ToonTex: {fileID: 2800000, guid: 52d4f70de0d23034c9332a59c8c84a49, type: 3}
+  - _ToonPointLightTex: {fileID: 2800000, guid: 52d4f70de0d23034c9332a59c8c84a49,
       type: 3}
   - _OcclusionMap: {instanceID: 0}
   - _EmissionMap: {instanceID: 0}

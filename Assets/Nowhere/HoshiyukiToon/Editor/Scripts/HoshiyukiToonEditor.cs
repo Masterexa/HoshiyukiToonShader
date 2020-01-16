@@ -44,8 +44,9 @@ namespace HoshiyukiToonShaderEditor{
                 public GUIContent lineSizeText   = new GUIContent("Size", "Size of outline(Viewport Space)");
                 public GUIContent lineColorText  = new GUIContent("Color", "Color(RGB) and Transparency(Alpha)");
 
-                public GUIContent standardGIText = new GUIContent("Use Traditional GI", "");
-                public GUIContent cullModeText   = new GUIContent("Cull Mode", "");
+                public GUIContent standardGIText                = new GUIContent("Use Traditional GI", "");
+                public GUIContent blendOcclusionToAlbedoText    = new GUIContent("Blend Occlusion to Albedo", "");
+                public GUIContent cullModeText                  = new GUIContent("Cull Mode", "");
 
                 public string tipsText                  = "Recommend \"No ramp\" and \"No shadow casting\" for character material.";
                 public string primaryMapsText           = "Main Maps";
@@ -82,6 +83,7 @@ namespace HoshiyukiToonShaderEditor{
                 
                 MaterialProperty    cullMode;
                 MaterialProperty    useStandardGI;
+                MaterialProperty    blendOcclusionToAlbedo;
 
                 bool                    m_firstTimeApply    = true;
                 MaterialEditor          m_materialEditor    = null;
@@ -192,6 +194,7 @@ namespace HoshiyukiToonShaderEditor{
                     EditorGUILayout.Space();
                     GUILayout.Label(s_styles.advancedOptionsText, EditorStyles.boldLabel);
                     m_materialEditor.ShaderProperty(useStandardGI, s_styles.standardGIText);
+                    m_materialEditor.ShaderProperty(blendOcclusionToAlbedo, s_styles.blendOcclusionToAlbedoText);
                 }
 
                 void BlendModeProp() {
@@ -273,6 +276,7 @@ namespace HoshiyukiToonShaderEditor{
                     // Option
                     cullMode                = FindProperty("_Cull", props);
                     useStandardGI           = FindProperty("_UseStandardGI", props);
+                    blendOcclusionToAlbedo  = FindProperty("_BlendOcclusionToAlbedo", props);
 
                     if( blendMode!=null && alphaCutoff!=null )
                     {
@@ -315,6 +319,7 @@ namespace HoshiyukiToonShaderEditor{
                     SetKeyword(mtl, "_EMISSION", shouldEmissionBeEnabled);
                     // GI Mode
                     SetKeyword(mtl, "NWH_TOON_STANDARDGI", mtl.GetFloat("_UseStandardGI")==1f);
+                    SetKeyword(mtl, "HTS_BLEND_OCCLUSION_TO_ALBEDO", mtl.GetFloat("_BlendOcclusionToAlbedo")==1f);
 
                     // Lightmap emissive
                     var flags = mtl.globalIlluminationFlags;

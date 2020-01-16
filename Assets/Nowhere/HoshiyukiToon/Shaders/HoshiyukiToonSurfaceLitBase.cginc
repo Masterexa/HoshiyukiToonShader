@@ -51,8 +51,14 @@ inline half4 SampleMOXSMap(float2 uv)
         o.Smoothness    = moxs.a;
 		o.Albedo		= c.rgb;
 		o.Emission		= emit;
-		o.Occlusion		= moxs.g;
 		o.Alpha			= c.a;
+
+		#ifdef HTS_BLEND_OCCLUSION_TO_ALBEDO
+			o.Albedo	*= moxs.g;
+			o.Occlusion = 1.0;
+		#else
+			o.Occlusion = moxs.g;
+		#endif
 
 		#ifdef NWH_TOON_CUTOUT
 			clip(c.a-_Cutoff);

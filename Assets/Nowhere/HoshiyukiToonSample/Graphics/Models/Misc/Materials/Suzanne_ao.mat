@@ -8,7 +8,7 @@ Material:
   m_PrefabInternal: {fileID: 0}
   m_Name: Suzanne_ao
   m_Shader: {fileID: 4800000, guid: d6ca4d37b0ad45e429f895352d602cb5, type: 3}
-  m_ShaderKeywords: _USESTANDARDGI_OFF
+  m_ShaderKeywords: HTS_BLEND_OCCLUSION_TO_ALBEDO _USESTANDARDGI_OFF
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -73,6 +73,7 @@ Material:
     m_Floats:
     - _Blend: 0
     - _BlendFactor: 0.589
+    - _BlendOcclusionToAlbedo: 1
     - _BumpScale: 1
     - _Cull: 2
     - _Cutoff: 0
@@ -88,6 +89,7 @@ Material:
     - _OutlineSize: 0.002
     - _Parallax: 0.02
     - _SmoothnessTextureChannel: 0
+    - _SpecularFactor: 0
     - _SpecularHighlights: 1
     - _SpecularStrength: 1
     - _SrcBlend: 1

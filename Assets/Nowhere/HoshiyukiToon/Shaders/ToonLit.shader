@@ -26,6 +26,7 @@ Shader "HoshiyukiToon/Lit" {
 
 		// Lit Options
 		[ToggleOff]								_UseStandardGI("Use Standard GI", Float) = 0
+		[ToggleOff]								_BlendOcclusionToAlbedo("Blend Occlusion to Albedo", Float) = 0
 		[Enum(UnityEngine.Rendering.CullMode)]	_Cull("Cull Mode", Float ) = 2
 		[HideInInspector]						_Blend("Mode", Float) = 0
 	}
@@ -37,6 +38,7 @@ Shader "HoshiyukiToon/Lit" {
 		CGPROGRAM
 			#pragma multi_compile _ NWH_TOON_CUTOUT
 			#pragma multi_compile _ NWH_TOON_STANDARDGI
+			#pragma multi_compile _ HTS_BLEND_OCCLUSION_TO_ALBEDO
 			#pragma surface surfLitBase ToonRampMetallic2 fullforwardshadows addshadow
 			#pragma target 3.0
 			#define HTS_USE_POINTLIGHTRAMP

@@ -27,6 +27,7 @@ Shader "HoshiyukiToon/LitFadeOutline"
 		_EmissionMap	( "Emission", 2D ) = "white"{}
 		// Lit Options
 		[ToggleOff]								_UseStandardGI("Use Standard GI", Float) = 0
+		[ToggleOff]								_BlendOcclusionToAlbedo("Blend Occlusion to Albedo", Float) = 0
 		[Enum(UnityEngine.Rendering.CullMode)]	_Cull("Cull Mode", Float ) = 2
 		[HideInInspector]						_Blend( "Mode", Float ) = 0
 			
